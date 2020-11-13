@@ -271,13 +271,13 @@ br.lists.spells = {
                 blindingSleet               = 207167,
                 breathOfSindragosa          = 152279,
                 coldHeart                   = 281208,
-                deathPact                   = 48743,
                 deathsReach                 = 276079,
                 frostscythe                 = 207230,
                 frozenPulse                 = 194909,
                 gatheringStorm              = 194912,
                 glacialAdvance              = 194913,
                 hornOfWinter                = 57330,
+                hypothermicPresence         = 321995,
                 icecap                      = 207126,
                 icyTalons                   = 194878,
                 inexorableAssault           = 253593,
@@ -300,7 +300,6 @@ br.lists.spells = {
                 epidemic                    = 207317,
                 festeringStrike             = 85948,
                 outbreak                    = 77575,
-                raiseDead                   = 46584,
                 scourgeStrike               = 55090,
                 -- Pet Abilities
                 claw                        = 47468,
@@ -340,7 +339,6 @@ br.lists.spells = {
                 asphyxiate                  = 108194,
                 burstingSores               = 207264,
                 clawingShadows              = 207311,
-                deathPact                   = 48743,
                 deathsReach                 = 276079,
                 defile                      = 152280,
                 ebonFever                   = 207269,        
@@ -382,7 +380,9 @@ br.lists.spells = {
                 mindFreeze                  = 47528,
                 pathOfFrost                 = 3714,
                 raiseAlly                   = 61999,
+                raiseDead                   = 46585,
                 runeStrike                  = 316239,
+                runeforging                 = 53428,
                 sacraficialPact             = 327574,
             },
             artifacts                       = {
@@ -408,6 +408,7 @@ br.lists.spells = {
 
             },
             talents                         = {
+                deathPact                   = 48743,
                 wraithWalk                  = 212552,
             },
         },
@@ -1043,7 +1044,6 @@ br.lists.spells = {
                 burstingShot                = 186387,
                 concussiveShot              = 5116,
                 counterShot                 = 147362,
-                explosiveShotDetonate       = 212679, -- Explodes the Explosive Shot
                 killShot                    = 53351,
                 multishot                   = 257620,
                 rapidFire                   = 257044,
@@ -1655,8 +1655,10 @@ br.lists.spells = {
 
             },
             buffs                           = {
+                eyeOfTheTiger               = 196608,
                 ironskinBrew                = 215479,
                 blackoutCombo               = 228563,
+                purifiedChi                 = 325092,
                 rushingJadeWind             = 116847,
                 zenMeditation               = 115176,
             },
@@ -2916,6 +2918,7 @@ br.lists.spells = {
             },
             buffs                           = {
                 ascendance                  = 114051,
+                crashLightning              = 187878,
                 earthShield                 = 974,
                 hailstorm                   = 334196,
                 hotHand                     = 215785,
@@ -2924,7 +2927,7 @@ br.lists.spells = {
                 windfuryTotem               = 327942,
             },
             debuffs                         = {
-
+                lashingFlames               = 334168,
             },
             glyphs                          = {
 

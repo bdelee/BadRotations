@@ -98,10 +98,7 @@ local function createOptions()
             -- Racial
             br.ui:createCheckbox(section,"Racial")
             -- Trinkets
-            br.ui:createDropdownWithout(section, "Trinkets", {"|cff00FF001st Only","|cff00FF002nd Only","|cffFFFF00Both","|cffFF0000None"}, 1, "|cffFFFFFFSelect Trinket Usage.")
-            br.ui:createCheckbox(section,"Power Reactor")
-            br.ui:createCheckbox(section,"Ashvane's Razor Coral")
-            br.ui:createCheckbox(section,"Pocket Sized Computation Device")
+            br.player.module.BasicTrinkets(nil,section)
             -- Bestial Wrath
             br.ui:createDropdownWithout(section,"Bestial Wrath", {"|cff00FF00Boss","|cffFFFF00Always"}, 1, "|cffFFFFFFSelect Bestial Wrath Usage.")
             -- Trueshot
@@ -134,6 +131,8 @@ local function createOptions()
         section = br.ui:createSection(br.ui.window.profile, "Interrupts")
             -- Counter Shot
             br.ui:createCheckbox(section,"Counter Shot")
+            -- Freezing Trap
+            br.ui:createCheckbox(section, "Freezing Trap")
             -- Intimidation
             br.ui:createCheckbox(section,"Intimidation")
             -- Interrupt Percentage
@@ -283,6 +282,15 @@ actionList.Interrupts = function()
             thisUnit = enemies.yards40f[i]
                 if canInterrupt(thisUnit,ui.value("Interrupt At")) then
                     if cast.counterShot(thisUnit) then ui.debug("Casting Counter Shot") return true end
+                end
+            end
+        end
+        -- Freezing Trap
+        if ui.checked("Freezing Trap") and cast.able.freezingTrap() then
+            for i = 1, #enemies.yards40 do
+                thisUnit = enemies.yards40[i]
+                if unit.distance(thisUnit) > 8 and cast.timeRemain(thisUnit) > 3 then
+                    if cast.freezingTrap(thisUnit,"ground") then ui.debug("Casting Freezing Trap") return true end
                 end
             end
         end
