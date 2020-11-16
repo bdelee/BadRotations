@@ -110,7 +110,7 @@ local function createOptions()
             br.ui:createSpinner(section, "Blinding Light", 40,  0,  100,  5,  "|cffFFBB00Health Percentage to use at.")
             br.ui:createSpinnerWithout(section, "Blinding Light Units", 3, 1, 5, 1, "|cffFFFFFFUnits to Cast On")
             -- Cleanse Toxin
-            br.ui:createDropdown(section, "Cleanse Toxin", playTarMouseFocLow, 1, "|cffFFFFFFTarget to Cast On")
+            br.ui:createDropdown(section, "Cleanse Toxins", playTarMouseFocLow, 1, "|cffFFFFFFTarget to Cast On")
             -- Divine Shield
             br.ui:createSpinner(section, "Divine Shield",  35,  0,  100,  5,  "|cffFFBB00Health Percentage to use at.")
             -- Eye for an Eye
@@ -326,7 +326,7 @@ actionList.Defensive = function()
         -- Cleanse Toxins
         if ui.checked("Cleanse Toxins") then
             local thisUnit = getHealUnitOption("Cleanse Toxin")
-            if cast.able.clenseToxins(thisUnit) and cast.dispel.cleanseToxins(thisUnit) and unit.distance(thisUnit) < 40 then
+            if cast.able.cleanseToxins(thisUnit) and cast.dispel.cleanseToxins(thisUnit) and unit.distance(thisUnit) < 40 then
                 if cast.cleanseToxins(thisUnit) then ui.debug("Casting Cleanse Toxins on "..unit.name(thisUnit)) return true end
             end
         end
@@ -606,7 +606,7 @@ actionList.Finisher = function()
     if cast.able.divineStorm() and var.dsCastable --and not buff.vanquishersHammer.exists()
         and ((not talent.crusade or cd.crusade.remains() > unit.gcd(true) * 3 or not ui.alwaysCdNever("Crusade"))
         and (not talent.executionSentence or (cd.executionSentence.remains() > unit.gcd(true) * 3 or not ui.alwaysCdNever("Execution Sentence")) or var.dsUnits)
-            or (var.dsUnits and (talent.holyAvenger and cd.hoylAvenger.remains() < unit.gcd(true) * 3 or buff.crusade.exists() and buff.crusade.stack() < 10)))
+            or (var.dsUnits and (talent.holyAvenger and cd.holyAvenger.remains() < unit.gcd(true) * 3 or buff.crusade.exists() and buff.crusade.stack() < 10)))
     then
         local theseUnits = (ui.mode.rotation == 2 or buff.empyreanPower.exists()) and 1 or ui.value("Divine Storm Units")
         if cast.divineStorm(nil,"aoe",theseUnits,8) then ui.debug("Casting Divine Storm") return true end
