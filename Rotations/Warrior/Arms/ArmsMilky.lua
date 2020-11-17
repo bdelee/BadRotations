@@ -1031,14 +1031,14 @@ local function runRotation()
             if actionList_Cooldowns() then return end
             -- -- Action List - Five Target
             --    -- run_action_list,name=five_target,if=spell_targets.whirlwind>4
-                if ((mode.rotation == 1 and #enemies.yards8 >= 2) or (mode.rotation == 2 and #enemies.yards8 > 0)) then
-                    if actionList_FiveTarget() then return end
-                end
+            if ((mode.rotation == 1 and #enemies.yards8 >= 2) or (mode.rotation == 2 and #enemies.yards8 > 0)) then
+                if actionList_FiveTarget() then return end
+            end
             -- -- Action List - Single
             --     -- run_action_list,name=single_target
-                if ((mode.rotation == 1 and #enemies.yards8 < 2) or (mode.rotation == 3 and #enemies.yards8 > 0)) then
-                    if actionList_Single() then return end
-                end
+            if ((mode.rotation == 1 and #enemies.yards8 < 2) or (mode.rotation == 3 and #enemies.yards8 > 0)) then
+                if actionList_Single() then return end
+            end
         end -- End Combat Rotation
         end -- Pause
     end -- End Timer
