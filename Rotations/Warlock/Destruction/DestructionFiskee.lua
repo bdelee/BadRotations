@@ -1,4 +1,4 @@
-local rotationName = "KinkDestruction"
+local rotationName = "DestructionFiskee"
 local dsInterrupt = false
 ---------------
 --- Toggles ---

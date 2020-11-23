@@ -61,6 +61,8 @@ local function createOptions()
 		br.ui:createCheckbox(section, "Automatic Aura replacement")
 		-- Taunt
 		br.ui:createCheckbox(section,"Taunt","|cffFFFFFFAuto Taunt usage.")
+		-- infinite Divine Steed
+		br.ui:createDropdown(section, "infinite Divine Steed key", br.dropOptions.Toggle, 6)
 		br.ui:checkSectionState(section)
 		------------------------
 		--- COOLDOWN OPTIONS ---
@@ -277,6 +279,25 @@ local function runRotation()
 	local HoJList = {}
 	for i in string.gmatch(getOptionValue("HoJ Prio Units"), "%d+") do
 		HoJList[tonumber(i)] = true
+	end
+	-- infinite Divine Steed
+	if isChecked("infinite Divine Steed key") and (SpecificToggle("infinite Divine Steed key") and not GetCurrentKeyBoardFocus()) then
+		if not IsHackEnabled("talents") then
+			RunMacroText(".talents 1")
+		end
+		if getBuffRemain("player", 254474) <= 0.5 then
+			if not IsAddOnLoaded("Blizzard_TalentUI") and not UnitAffectingCombat("player") then
+				LoadAddOn("Blizzard_TalentUI")
+			end
+			PlayerTalentFrame:Show()
+			PlayerTalentFrame:Hide()
+			RunMacroText("/click PlayerTalentFrameTab2")
+			if IsResting() then
+				RunMacroText("/click PlayerTalentFrameTalentsTalentRow4Talent1")
+			end
+			RunMacroText("/click PlayerTalentFrameTalentsTalentRow4Talent2")
+			if cast.divineSteed() then return end
+		end
 	end
 	--------------------
 	--- Action Lists ---

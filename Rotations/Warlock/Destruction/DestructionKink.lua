@@ -1,5 +1,5 @@
 local rotationName = "KinkDestruction"
-local VerNum = "1.2.4"
+local VerNum = "1.2.6"
 local colorOrange = "|cffFF7C0A"
 ---------------
 --- Toggles ---
@@ -278,7 +278,6 @@ local summonId = 0
 local summonPet
 local tanks = getTanksTable()
 local targetMoveCheck = false
-local notallowed = (select(2, IsInInstance()) == "arena" or select(2, IsInInstance()) == "pvp")
 
 if br.lastImmo == nil then br.lastImmo = "player" end
 if br.pauseTime == nil then br.pauseTime = GetTime() end
@@ -558,6 +557,16 @@ then
 return true
 end
 end
+
+
+    local function isMelee(unit)
+        if unit == nil then unit = "target" end
+        local class = select(2, UnitClass(unit))
+        if (class == "DRUID" or class =="PALADIN" or class =="WARRIOR" or class =="MONK" or class =="SHAMAN" or class =="DEATHKNIGHT" or class =="ROGUE" or class =="DEMONHUNTER" )and UnitPowerMax(unit) < 70000 then
+            return true
+        end
+    end
+
 --------------------------------------------------
 function inRange(t,spellID)
 if UnitExists(t)
@@ -566,6 +575,8 @@ and IsSpellInRange(GetSpellInfo(spellID),t) == 1
 		return true
 	end
 end
+
+
 
 
 
@@ -1322,14 +1333,11 @@ actionList.ST = function()
             if debuff.havoc.count() > 0 and #enemies.yards40f < 5 - inferno + internalInferno then
                 if actionList.Havoc() then return true end
             end
-
-            if not UnitIsDeadOrGhost("target") and IsHealer("target") and GetObjectExists("target") and UnitCanAttack("target","player") and UnitIsPVP("target") and UnitIsPlayer("target") and inCombat then
-            end
            
             -- Curse of Weakness
                 for i = 1, #enemies.yards40f do
                     local thisUnit = enemies.yards40f[i]
-                    if ui.checked("Curse of Weakness") and ttd(unit) >= 6 and not UnitIsDeadOrGhost(unit) and IsMelee(unit) and GetObjectExists(unit) and UnitCanAttack(unit,"player") and UnitIsPVP(unit) and UnitIsPlayer("target") then 
+                    if ui.checked("Curse of Weakness") and ttd(thisUnit) >= 6 and not UnitIsDeadOrGhost(thisUnit) and isMelee(thisUnit) and GetObjectExists(thisUnit) and UnitCanAttack(thisUnit,"player") and UnitIsPVP(unit) and UnitIsPlayer(thisUnit) then 
                         if cast.curseOfWeakness(unit) then 
                     --br.addonDebug("[Action:PvP] Curse of Tongues" .. " | Name: " .. name .. " | Class: ".. class .. " | Level:" .. UnitLevel(unit) .. " | Race: " .. select(1,UnitRace(unit))) 
                     return true
@@ -1340,7 +1348,7 @@ actionList.ST = function()
             -- Curse of Tongues
             for i = 1, #enemies.yards40f do
                 local unit = enemies.yards40f[i]
-                if ui.checked("Curse of Tongues") and ttd(unit) >= 6 and not UnitIsDeadOrGhost(unit) and IsHealer(unit) and GetObjectExists(unit) and UnitCanAttack(unit,"player") and UnitIsPVP(unit) and UnitIsPlayer("target") then
+                if ui.checked("Curse of Tongues") and ttd(thisUnit) >= 6 and not UnitIsDeadOrGhost(thisUnit) and isMelee(thisUnit)and GetObjectExists(thisUnit) and UnitCanAttack(thisUnit,"player") and UnitIsPVP(unit) and UnitIsPlayer(thisUnit) then
                     if cast.curseOfTongues(unit) then 
                     --br.addonDebug("[Action:PvP] Curse of Tongues" .. " | Name: " .. name .. " | Class: ".. class .. " | Level:" .. UnitLevel(unit) .. " | Race: " .. select(1,UnitRace(unit))) 
                     return true
@@ -1719,7 +1727,7 @@ local function runRotation()
         SpellStopTargeting()
         br.addonDebug("Canceling Spell")
         return false
-    elseif (inCombat and profileStop==true) or pause() or mode.rotation==4 or notallowed then
+    elseif (inCombat and profileStop==true) or pause() or mode.rotation==4 then
         br.pauseTime = GetTime()
         return true
     else
