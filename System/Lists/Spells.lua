@@ -2746,6 +2746,9 @@ br.lists.spells = {
                 sliceAndDice                = 315496,
                 stealth                     = 1784,
                 poisons                     = 66,
+                echoingReprimand            = 323547,
+                serratedBoneSpike           = 328547,
+                sepsis                      = 328305,
             },
             artifacts                       = {
 
@@ -2776,6 +2779,7 @@ br.lists.spells = {
                 cheapShot                   = 1833,
                 markedForDeath              = 137619,
                 sap                         = 6770,
+                serratedBoneSpikeDot        = 324073,
             },
             glyphs                          = {
                 glyphOfBlackout             = 219693,
@@ -3228,6 +3232,7 @@ br.lists.spells = {
                 bilescourgeBombers          = 267211,
                 callDreadstalkers           = 104316,
                 commandDemon                = 119898,
+                corruption                  = 172,
                 demonbolt                   = 264178,
                 demonicEmpowerment          = 193396,
                 demonicStrength             = 267171,
@@ -3276,13 +3281,22 @@ br.lists.spells = {
             },
             talents                         = {
                 bilescourgeBombers          = 267211,
+                darkfury                    = 264874,
                 demonicConsumption          = 267215,
                 demonicStrength             = 267171,
-                doom                        = 265412,
+                demonicCalling              = 205145,
+                doom                        = 603,
+                dreadlash                   = 264078,
+                fromTheShadows              = 267170,
+                grimoireFelguard            = 111898,
+                howlOfTerror                = 5484,
+                innerDemons                 = 267216,
                 netherPortal                = 267217,
                 powerSiphon                 = 264130,
+                sacrificedSouls             = 267214,
                 soulStrike                  = 264057,
                 summonVilefiend             = 264119,
+                soulConduit                 = 215941,
 
             },
             traits                          = {
@@ -3394,6 +3408,7 @@ br.lists.spells = {
                 createHealthstone           = 6201,
                 createSoulwell              = 29893,
                 commandDemon                = 119898,
+                corruption                  = 172,
                 darkPact                    = 108416,
                 demonicGateway              = 111771,
                 demonicCircle               = 48018,

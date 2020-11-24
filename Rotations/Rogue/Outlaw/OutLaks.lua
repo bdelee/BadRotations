@@ -213,12 +213,12 @@ local combo, comboDeficit, comboMax
 local ambush_flag = false
 local do_stun
 local auto_stealthed
-local real_def
 local should_pool
 local rnd5 -- rand number between 1 and 5
 local rnd10 --random number between 1 and 10
 local dynamic_target_melee
 local buff_rollTheBones_remain = 0
+local buff_rollTheBones_count = 0
 
 
 -- lists ...lots of lists
@@ -700,7 +700,6 @@ end
 -- essences
 actionList.essences = function()
 
-    --   real_def = br.player.power.comboPoints.max() - buff_count()
 
     if (getCombatTime() > 2 or buff.tricksOfTheTrade.exists() or #br.friend == 1) and not stealth and not IsMounted() then
         -- Reaping Flames
@@ -830,10 +829,6 @@ actionList.dps = function()
         dps_key()
     end
 
-
-    --Print(real_def)
-
-
     if stealth and (ambush_flag or mode.ambush == 1) then
         if actionList.Stealth() then
             return true
@@ -861,14 +856,6 @@ actionList.dps = function()
                     end
                 end
             end]]
-    -- new roll the rollTheBones
-    --roll_the_bones,if=buff.roll_the_bones.remains<=3|variable.rtb_reroll
-    if cast.able.rollTheBones() and #enemies.yards25nc > 0 and (mode.cooldown == 1 and isChecked("Roll The Bones") or not isChecked("Roll The Bones")) and buff_rollTheBones_remain < 3 then
-        if cast.rollTheBones() then
-            return true
-        end
-    end
-
 
 
     --  Print(tostring(getOutLaksTTD(8)))
@@ -905,13 +892,15 @@ actionList.dps = function()
         end
     end
 
+
+
     -- dps regular damage
     if combo >= comboMax - (int(buff.broadside.exists()) + int(buff.opportunity.exists()))
             * int(talent.quickDraw and (not talent.markedForDeath or cd.markedForDeath.remain() < 1))
             * int(br.player.traits.aceupyoursleeve.rank < 2 or cd.betweenTheEyes.exists())
+            or hasBuff(323558) and combo == 2 or hasBuff(323559) and combo == 3 or hasBuff(323560) and combo == 4
     then
 
-        --    if combo >= real_def or cast.last.markedForDeath(1) and not stealth then
         if cast.able.betweenTheEyes() then
             if (GetUnitExists(units.dyn20) and not isExplosive(units.dyn20)) then
                 if cast.betweenTheEyes(units.dyn20) then
@@ -938,6 +927,23 @@ actionList.dps = function()
         end
     else
         if not stealth and not should_pool then
+
+            if cast.able.echoingReprimand() then
+                if cast.echoingReprimand("target") then
+                    return true
+                end
+            end
+
+            --serrated_bone_spike,cycle_targets=1,if=buff.slice_and_dice.up&!dot.serrated_bone_spike_dot.ticking|fight_remains<=5|cooldown.serrated_bone_spike.charges_fractional>=2.75
+
+            --    Print(br.player.charges.serratedBoneSpike.frac())
+
+            if cast.able.serratedBoneSpike(dynamic_target_melee) and buff.sliceAndDice.exists("player") or debuff.serratedBoneSpikeDot.exists(dynamic_target_melee)
+                    or ttd(dynamic_target_melee) <= 5 or br.player.charges.serratedBoneSpike.frac() >= 2.75 then
+                if cast.serratedBoneSpike(dynamic_target_melee) then
+                    return true
+                end
+            end
 
             if cast.able.pistolShot() and
                     (buff.opportunity.exists() and (br.player.power.energy.amount() < 45 or talent.quickDraw)
@@ -1125,14 +1131,6 @@ actionList.Extra = function()
         CastSpellByName(GetSpellInfo(spell.distract), "cursor")
         return
     end
-    if cast.able.rollTheBones() and
-            (mode.cooldown == 1 and isChecked("Roll The Bones") or not isChecked("Roll The Bones")) and buff_rollTheBones_remain < 3 then
-        if cast.rollTheBones() then
-            --  Print(tostring(isChecked("Roll The Bones")))
-            br.player.ui.debug("rolling bones!")
-            return true
-        end
-    end
 
     if (mode.cooldown == 1 and isChecked("Slice and Dice") or not isChecked("Slice and Dice")) then
         if cast.able.sliceAndDice() and combo > 0 then
@@ -1153,6 +1151,35 @@ actionList.Extra = function()
         end
     end
 
+    if cast.able.rollTheBones() and (inCombat or #enemies.yards25nc > 0) then
+        local badguy = false
+        if not inCombat and #enemies.yards25nc > 0 then
+            for i = 1, #enemies.yards25nc do
+                local thisUnit = enemies.yards25nc[i]
+                local react = GetUnitReaction(thisUnit, "player") or 10
+                if react < 4 and UnitIsEnemy("player", thisUnit) then
+                    badguy = true
+                end
+            end
+        end
+        if inCombat or badguy then
+            if br.timer:useTimer("check_for_buffs", 1) then
+                buff_rollTheBones_count = 0
+                for k, v in pairs(br.player.spell.buffs.rollTheBones) do
+                    if UnitBuffID("player", tonumber(v)) then
+                        buff_rollTheBones_remain = tonumber(getBuffRemain("player", tonumber(v)))
+                        buff_rollTheBones_count = buff_rollTheBones_count + 1
+                    end
+                end
+            end
+            if (buff_rollTheBones_remain < 3 or buff_rollTheBones_count < 2 and (buff.buriedTreasure.exists() or buff.grandMelee.exists() or buff.trueBearing.exists())) then
+                if cast.rollTheBones() then
+                    br.player.ui.debug("rolling bones!")
+                    return true
+                end
+            end
+        end
+    end
 
 end -- End Action List - Extra
 
@@ -1254,7 +1281,7 @@ actionList.Defensive = function()
                             if cast.evasion() then
                                 return true
                             end
-                        elseif br.player.talent.elusiveness and feintList[interruptID] then
+                        elseif br.player.talent.elusiveness and (feintList[interruptID] or getDebuffStacks("player", 240443) > 3) then
                             if cast.pool.feint() and cd.feint.remain() <= castleft then
                                 should_pool = true
                             end
@@ -1608,8 +1635,9 @@ local function runRotation()
     profileStop = profileStop or false
     ttd = getTTD
     haltProfile = (inCombat and profileStop) or (IsMounted() or IsFlying()) or pause() or mode.rotation == 4 or cast.current.focusedAzeriteBeam()
-    real_def = br.player.power.comboPoints.max() - buff_count()
     dynamic_target_melee = talent.acrobaticStrikes and units.dyn8 or units.dyn5
+
+    local charges = br.player.charges
 
     local inInstance = br.player.instance == "party" or br.player.instance == "scenario" or br.player.instance == "pvp" or br.player.instance == "arena" or br.player.instance == "none"
     local inRaid = br.player.instance == "raid" or br.player.instance == "pvp" or br.player.instance == "arena" or br.player.instance == "none"
@@ -1666,15 +1694,7 @@ local function runRotation()
         end
     end
 
-    if br.timer:useTimer("check_for_buffs", 1) then
-        for k, v in pairs(br.player.spell.buffs.rollTheBones) do
-            if UnitBuffID("player", tonumber(v)) then
-                buff_rollTheBones_remain = tonumber(getBuffRemain("player", tonumber(v)))
-                --      Print(buff_rollTheBones_remain)
-                break
-            end
-        end
-    end
+
 
 
     --        br.ui:createDropdown(section, "Draw Range", { "Never", "Blade Flurry", "always" }, 1, "Draw range on screen")
