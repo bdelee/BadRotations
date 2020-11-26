@@ -725,6 +725,7 @@ br.lists.spells = {
             },
             buffs                           = {
                 apexPredator                = 255984,
+                apexPredatorsCraving        = 339140,
                 berserk                     = 106951,
                 bloodtalons                 = 145152,
                 clearcasting                = 135700,
@@ -993,9 +994,11 @@ br.lists.spells = {
             covenants                       = {
                 adaptiveSwarm               = 325727,
                 convokeTheSpirits           = 323764,
+                kindredSpirits              = 326434,
                 ravenousFrenzy              = 323546,
             },
             debuffs                         = {
+                adaptiveSwarm               = 325733,
                 cyclone                     = 33786,
                 entanglingRoots             = 339,
                 growl                       = 6795,
@@ -2194,7 +2197,8 @@ br.lists.spells = {
                 blindingLight               = 105421,
                 forbearance                 = 25771,
                 hammerOfJustice             = 853,
-                turnEvil                    = 10326
+                turnEvil                    = 10326,
+                handOfReckoning             = 62124,
             },
             glyphs                          = {
                 glyphOfFireFromHeavens      = 57954,
@@ -2869,7 +2873,10 @@ br.lists.spells = {
                 echoingReprimand4           = 323560,
             },
             conduits                        = {
-
+                lashingScars                = 341310,
+                plannedExecution            = 341556,
+                reverberation               = 341264,
+                septicShock                 = 341309,
             },
             covenants                       = {
                 echoingReprimand            = 323547,
@@ -3208,7 +3215,7 @@ br.lists.spells = {
                 waterWalking                = 546,
             },
             conduits                        = {
-
+                astralProtection            = 337964,
             },
             covenants                       = {
                 chainHarvest                = 320674,
@@ -3858,7 +3865,7 @@ br.lists.spells = {
                 victorious                  = 32216,
             },
             conduits                        = {
-                
+                viciousContempt             = 337302,
             },
             covenants                       = {
                 ancientAftershock           = 325886,
@@ -3973,6 +3980,9 @@ br.lists.spells = {
                 worldveinResonance              = 313310,
             },
             conduits                            = {
+
+            },
+            covenants                           = {
                 covenantAbility                 = 313347,
                 doorOfShadows                   = 300728,
                 fleshcraft                      = 331180,
