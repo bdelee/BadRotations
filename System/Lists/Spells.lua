@@ -604,6 +604,7 @@ br.lists.spells = {
                 newMoon                     = 274281,
                 removeCorruption            = 2782,
                 solarBeam                   = 78675,
+                typhoon                     = 132469,
                 wrath                       = 190984,
                 starfall                    = 191034,
                 starsurge                   = 78674,
@@ -671,7 +672,6 @@ br.lists.spells = {
                 stellarDrift                = 202354,
                 stellarFlare                = 202347,
                 twinMoons                   = 279620,
- --               typhoon                     = 132469,
                 warriorOfElune              = 202425,
 
             },
@@ -820,12 +820,11 @@ br.lists.spells = {
                 starsurge                   = 197626,
                 sunfire                     = 93402,
                 tranquility                 = 740,
-                ursolsVortex                = 102793,
                 yserasGift                  = 145108,
                 swipeResto                  = 213764,
             },
             artifacts                       = {
-
+                
             },
             buffs                           = {
                 abundance                   = 207640,
@@ -853,7 +852,7 @@ br.lists.spells = {
                 sunfire                     = 164815,
             },
             glyphs                          = {
-
+                
             },
             talents                         = {
                 abundance                   = 207383,
@@ -869,12 +868,12 @@ br.lists.spells = {
                 nourish                     = 50464,
                 overgrowth                  = 203651,
                 photosynthesis              = 274902,
---                prosperity                  = 200383,
+                --                prosperity                  = 200383,
                 renewal                     = 108238,
                 soulOfTheForest             = 158478,
                 springBlossoms              = 207385,
---                stonebark                   = 197061,
-
+                --                stonebark                   = 197061,
+                
             },
             traits                          = {
                 dawningSun                  = 276152,
@@ -901,7 +900,7 @@ br.lists.spells = {
                 lunarStrikeAff              = 197628,
                 mangle                      = 33917,
                 moonfire                    = 8921,
-                moonkinForm                 = 197625,
+                moonkinForm                 = 24858,
                 mountForm                   = 210053,
                 naturesControl              = 175682, -- It's still in the spellbook, for some reason.
                 prowl                       = 5215,
@@ -926,6 +925,7 @@ br.lists.spells = {
                 thrashCat                   = 106830,
                 travelForm                  = 783,
                 treantForm                  = 114282,
+                ursolsVortex                = 102793,
                 wildGrowth                  = 48438,
                 wrath                       = 5176,
             },
@@ -2092,6 +2092,7 @@ br.lists.spells = {
                 shieldOfTheRighteous        = 53600,
                 turnEvil                    = 10326,
                 wordOfGlory                 = 85673,
+				contemplation               = 121183,
             },
             artifacts                       = {
 
@@ -2643,7 +2644,6 @@ br.lists.spells = {
                 sinisterStrike              = 1752,
                 blackPowder                 = 319175,
                 coldBlood                   = 213981,
-                premeditation               = 343160,
             },
             artifacts                       = {
 
@@ -2691,6 +2691,7 @@ br.lists.spells = {
                 soothingDarkness            = 200759,
                 subterfuge                  = 108208,
                 weaponmaster                = 193537,
+                premeditation               = 343160,
             },
             traits                          = {
                 bladeInTheShadows           = 275896,
@@ -2750,6 +2751,7 @@ br.lists.spells = {
                 echoingReprimand            = 323547,
                 serratedBoneSpike           = 328547,
                 sepsis                      = 328305,
+                flagellation                = 313347,
             },
             artifacts                       = {
 
@@ -2769,6 +2771,8 @@ br.lists.spells = {
                 stealth                     = 1784,
                 vanish                      = 11327 or 115193,
                 shroudOfConcealment         = 114018,
+                flagellation                = 345569,
+                soulshape                   = 310143,
             },
             debuffs                         = {
                 instantPoison               = 315584,
@@ -2781,6 +2785,7 @@ br.lists.spells = {
                 markedForDeath              = 137619,
                 sap                         = 6770,
                 serratedBoneSpikeDot        = 324073,
+                flagellation                = 323654,
             },
             glyphs                          = {
                 glyphOfBlackout             = 219693,
@@ -2803,12 +2808,6 @@ br.lists.spells = {
                 invigoratingShadowdust      = 340080,
                 tinyToxicBlades             = 340078,
             },
-            -- covenant                        = {
-            --     echoingReprimand            = 323547,
-            --     serratedBoneSpike           = 328547,
-            --     sepsis                      = 328305,
-            --     slaughter                   = 323654,
-            -- },
         },
     },
  SHAMAN = {
