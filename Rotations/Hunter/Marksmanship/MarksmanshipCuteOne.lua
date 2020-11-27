@@ -68,6 +68,7 @@ local function createOptions()
             br.ui:createDropdownWithout(section,"Misdirection", {"|cff00FF00Tank","|cffFFFF00Focus","|cffFF0000Pet"}, 1, "|cffFFFFFFWhen to use Artifact Ability.")
             -- Heart Essence
             br.ui:createCheckbox(section,"Use Essence")
+            br.ui:createCheckbox(section, "Do Not Auto Engage if OOC")
         br.ui:checkSectionState(section)
         -- Pet Options
         br.rotations.support["PetCuteOne"].options()
@@ -170,7 +171,7 @@ local actionList = {}
 local function alwaysCdNever(option)
     if option == "Racial" then GetSpellInfo(br.player.spell.racial) end
     local thisOption = ui.value(option)
-    return thisOption == 1 or (thisOption == 2 and ui.ui.useCDs())
+    return thisOption == 1 or (thisOption == 2 and ui.useCDs())
 end
 
 --------------------
@@ -288,7 +289,7 @@ actionList.Cooldowns = function()
     -- Double Tap
     -- double_tap,if=cooldown.rapid_fire.remains<gcd|cooldown.rapid_fire.remains<cooldown.aimed_shot.remains|target.time_to_die<20
     if alwaysCdNever("Double Tap") and cast.able.doubleTap() and talent.doubleTap
-        and (cd.rapidFire.remain() < unit.gcd(true) or cd.rapidFire.remain() < cd.aimedShot.remain() or (unit.ttd(units.dyn40) < 20 and ui.ui.useCDs()))
+        and (cd.rapidFire.remain() < unit.gcd(true) or cd.rapidFire.remain() < cd.aimedShot.remain() or (unit.ttd(units.dyn40) < 20 and ui.useCDs()))
     then
         if cast.doubleTap() then ui.debug("Casting Double Tap") return true end
     end
@@ -572,7 +573,7 @@ actionList.PreCombat = function()
         -- Summon Pet
         -- summon_pet
         -- if actionList.PetManagement() then ui.debug("") return true end
-        if unit.valid("target") and unit.distance("target") < 40 then
+        if unit.valid("target") and unit.distance("target") < 40 and not ui.checked("Do Not Auto Engage") then
             -- Double Tap
             -- double_tap,precast_time=10
             if cast.able.doubleTap() and ui.pullTimer() <= 10 then
@@ -664,7 +665,7 @@ local function runRotation()
     -- Profile Stop | Pause
     if not unit.inCombat() and not unit.exists("target") and var.profileStop then
         var.profileStop = false
-    elseif var.haltProfile then
+    elseif var.haltProfile and (not unit.isCasting() or pause(true)) then
         StopAttack()
         if unit.isDummy() then ClearTarget() end
         return true
