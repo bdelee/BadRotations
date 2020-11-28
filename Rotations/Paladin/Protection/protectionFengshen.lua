@@ -1,7 +1,7 @@
 ﻿local rotationName = "Feng"
-local StunsBlackList=""
-local StunSpellList=""
-local HoJPrioList = ""
+local StunsBlackList="167876|169861|168318|165824"
+local StunSpellList="332329|332671|326450|328177|336451|331718|331743"
+local HoJPrioList = "164702|164362|170488"
 ---------------
 --- Toggles ---
 ---------------
@@ -348,6 +348,17 @@ local function runRotation()
 				end
 			end
 		end
+		-- Blessing of Freedom
+		if inInstance then
+			if getDebuffRemain("player",330810) ~= 0 or getDebuffRemain("player",326827) ~= 0 or getDebuffRemain("player",324608) ~= 0 then
+				if cast.blessingOfFreedom("player") then return end
+			end
+			for i = 1, #br.friend do
+				if getDebuffRemain(br.friend[i].unit,320788) ~= 0 and #getAllies(br.friend[i].unit,17) <= 1 then
+					if cast.blessingOfFreedom(br.friend[i].unit) then return end
+				end
+			end
+		end
 	end
 	-- Action List - Defensives
 	local function actionList_Defensive()
@@ -648,7 +659,7 @@ local function runRotation()
 			end
 			if GetUnitExists(units.dyn5) then
 				-- Seraphim
-				if isChecked("Seraphim") and cast.able.seraphim() and talent.seraphim and holyPower > 2 and (getOptionValue("Seraphim") <= ttd ) then
+				if isChecked("Seraphim") and cast.able.seraphim() and talent.seraphim and holyPower > 2 and getOptionValue("Seraphim") <= ttd then
 					if cast.seraphim() then return end
 				end
 				-- Avenging Wrath
