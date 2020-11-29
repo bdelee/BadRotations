@@ -1,7 +1,7 @@
 ﻿local rotationName = "Feng"
-local StunsBlackList="167876|169861|168318|165824|165919|171799|168942"
+local StunsBlackList="167876|169861|168318|165824|165919|171799|168942|167612"
 local StunSpellList="332329|332671|326450|328177|336451|331718|331743"
-local HoJPrioList = "164702|164362|170488|165905"
+local HoJPrioList = "164702|164362|170488|165905|165251"
 ---------------
 --- Toggles ---
 ---------------
@@ -320,7 +320,7 @@ local function runRotation()
 				end
 			end
 		end
-		if inInstance and inRaid then
+		if inInstance or inRaid then
 			-- Auto cancel Blessing of Protection
 			if isChecked("Auto cancel BoP") then
 				if buff.blessingOfProtection.exists() and cast.able.handOfReckoning() then
