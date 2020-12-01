@@ -87,14 +87,8 @@ local function createOptions()
 		--- DEFENSIVE OPTIONS ---
 		-------------------------
 		section = br.ui:createSection(br.ui.window.profile, "Defensive")
-		-- Purify Soul
-		br.ui:createSpinner(section, "Phial of Serenity",  60,  0,  100,  5,  "|cffFFFFFFHealth Percentage to use at")
-		-- Healthstone
-		br.ui:createSpinner(section, "Pot/Stoned",  30,  0,  100,  5,  "|cffFFFFFFHealth Percentage to use at")
-		-- Gift of The Naaru
-		if br.player.race == "Draenei" then
-			br.ui:createSpinner(section, "Gift of the Naaru",  50,  0,  100,  5,  "|cffFFFFFFHealth Percentage to use at")
-		end
+		-- Basic Healing Module
+		br.player.module.BasicHealing(section)
 		if br.player.race == "BloodElf" then
 			br.ui:createSpinner (section, "Arcane Torrent Dispel", 1, 0, 20, 1, "","|cffFFFFFFMinimum Torrent Targets")
 		end
@@ -130,7 +124,7 @@ local function createOptions()
 		-- Redemption
 		br.ui:createDropdown(section, "Redemption", {"|cffFFFF00Selected Target","|cffFF0000Mouseover Target"}, 1, "|ccfFFFFFFTarget to Cast On")
 		-- Unstable Temporal Time Shifter
-		-- br.ui:createDropdown(section, "Unstable Temporal Time Shifter", {"|cff00FF00Target","|cffFF0000Mouseover","|cffFFBB00Auto"}, 1, "","|cffFFFFFFTarget to cast on")
+		br.ui:createDropdown(section, "Engineering Revive", {"|cff00FF00Target","|cffFF0000Mouseover","|cffFFBB00Auto"}, 1, "","|cffFFFFFFTarget to cast on")
 		br.ui:checkSectionState(section)
 		-------------------------
 		--- INTERRUPT OPTIONS ---
@@ -188,8 +182,6 @@ local function createOptions()
 		br.ui:createDropdown(section,  "Defensive Mode", br.dropOptions.Toggle,  6)
 		-- Interrupts Key Toggle
 		br.ui:createDropdown(section,  "Interrupt Mode", br.dropOptions.Toggle,  6)
-		-- Consecration Key Toggle
-		br.ui:createDropdown(section, "Consecration Mode", br.dropOptions.Toggle,  6)
 		-- Pause Toggle
 		br.ui:createDropdown(section,  "Pause Mode", br.dropOptions.Toggle,  6)
 		br.ui:checkSectionState(section)
@@ -250,6 +242,7 @@ local function runRotation()
 	local ttd           = getTTD("target")
 	local units         = br.player.units
 	local level         = br.player.level
+	local module        = br.player.module
 
 	units.get(5)
 	units.get(10)
@@ -344,10 +337,7 @@ local function runRotation()
 	-- Action List - Defensives
 	local function actionList_Defensive()
 		if useDefensive() then
-			-- Gift of the Naaru
-			if isChecked("Gift of the Naaru") and php <= getOptionValue("Gift of the Naaru") and php > 0 and race == "Draenei" then
-				if castSpell("player",racial,false,false,false) then return end
-			end
+			module.BasicHealing()
 			-- Arcane Torrent
 			if isChecked("Arcane Torrent Dispel") and race == "BloodElf" then
 				local torrentUnit = 0
@@ -360,20 +350,6 @@ local function runRotation()
 							break
 						end
 					end
-				end
-			end
-			-- Purify Soul
-			if isChecked("Phial of Serenity") and php <= getOptionValue("Phial of Serenity") and inCombat and hasItem(177278) then
-				if canUseItem(177278) then
-					useItem(177278)
-				end
-			end
-			-- Pot/Stoned
-			if isChecked("Pot/Stoned") and php <= getOptionValue("Pot/Stoned") and inCombat and (hasHealthPot() or hasItem(5512))then
-				if canUseItem(5512) then
-					useItem(5512)
-				elseif canUseItem(healPot) then
-					useItem(healPot)
 				end
 			end
 			-- Lay On Hands
@@ -598,24 +574,24 @@ local function runRotation()
 					if cast.flashOfLight("player") then return end
 				end
 			end
-			-- Unstable Temporal Time Shifter
-			-- if isChecked("Unstable Temporal Time Shifter") and canUseItem(158379) and not isMoving("player") and inCombat then
-				-- if getOptionValue("Unstable Temporal Time Shifter") == 1
-					-- and UnitIsPlayer("target") and UnitIsDeadOrGhost("target") and GetUnitIsFriend("target","player") then
-					-- UseItemByName(158379,"target")
-				-- end
-				-- if getOptionValue("Unstable Temporal Time Shifter") == 2
-					-- and UnitIsPlayer("mouseover") and UnitIsDeadOrGhost("mouseover") and GetUnitIsFriend("mouseover","player") then
-					-- UseItemByName(158379,"mouseover")
-				-- end
-				-- if getOptionValue("Unstable Temporal Time Shifter") == 3 then
-					-- for i =1, #br.friend do
-						-- if UnitIsPlayer(br.friend[i].unit) and UnitIsDeadOrGhost(br.friend[i].unit) and GetUnitIsFriend(br.friend[i].unit,"player") then
-							-- UseItemByName(158379,br.friend[i].unit)
-						-- end
-					-- end
-				-- end
-			-- end
+			-- Engineering Revive
+			if isChecked("Engineering Revive") and canUseItem(184308) and not isMoving("player") and inCombat then
+				if getOptionValue("Engineering Revive") == 1
+					and UnitIsPlayer("target") and UnitIsDeadOrGhost("target") and GetUnitIsFriend("target","player") then
+					UseItemByName(184308,"target")
+				end
+				if getOptionValue("Engineering Revive") == 2
+					and UnitIsPlayer("mouseover") and UnitIsDeadOrGhost("mouseover") and GetUnitIsFriend("mouseover","player") then
+					UseItemByName(184308,"mouseover")
+				end
+				if getOptionValue("Engineering Revive") == 3 then
+					for i =1, #br.friend do
+						if UnitIsPlayer(br.friend[i].unit) and UnitIsDeadOrGhost(br.friend[i].unit) and GetUnitIsFriend(br.friend[i].unit,"player") then
+							UseItemByName(184308,br.friend[i].unit)
+						end
+					end
+				end
+			end
 		end
 	end -- End Action List - Defensive
 	local function BossEncounterCase()
@@ -630,6 +606,9 @@ local function runRotation()
 		end
 		-- Blessing of Freedom
 		if inInstance and cast.able.blessingOfFreedom() then
+			if UnitCastingInfo("boss1") == GetSpellInfo(320788) then
+				if cast.blessingOfFreedom("boss1target") then return end
+			end
 			if getDebuffRemain("player",330810) ~= 0 or getDebuffRemain("player",326827) ~= 0 or getDebuffRemain("player",324608) ~= 0 then
 				if cast.blessingOfFreedom("player") then return end
 			end
@@ -782,34 +761,33 @@ local function runRotation()
 			----------------------------------
 			-- Shield of the Righteous
 			if isChecked("Shield of the Righteous") and cast.able.shieldOfTheRighteous() and (holyPower > 2 or buff.divinePurpose.exists())
-			and (buff.holyAvenger.exists() or debuff.judgment.exists(units.dyn10) or holyPower == 5) then
+			and (buff.holyAvenger.exists() or debuff.judgment.exists(units.dyn10) or holyPower == 5 or buff.shieldOfTheRighteous.remains("player") < 2) then
 				if cast.shieldOfTheRighteous(units.dyn5) then return end
 			end
-			if GetUnitExists(units.dyn30) and getFacing("player",units.dyn30) then
-				-- Avenger's Shield
-				if isChecked("Avenger's Shield") and cast.able.avengersShield() and #enemies.yards10 >= 3 then
-					if cast.avengersShield(units.dyn30) then return end
-				end
-				-- Divine Toll
-				if isChecked("Divine Toll") and cast.able.divineToll() and (#enemies.yards10 >= getValue("Divine Toll") or isBoss(units.dyn30)) then
-					if cast.divineToll(units.dyn30) then return end
-				end
-				-- Judgment
-				if isChecked("Judgment") and cast.able.judgment() and ((talent.crusadersJudgment and charges.judgment.frac() >= 1.99) or not talent.crusadersJudgment or not debuff.judgment.exists(units.dyn30)) then
-					if cast.judgment(units.dyn30) then return end
-				end
-				-- Hammer of Wrath
-				if isChecked("Hammer of Wrath") and cast.able.hammerOfWrath() and (getHP(units.dyn30) <= 20 or (level >=58 and buff.avengingWrath.exists()) or getBuffRemain("player", 345693) ~= 0)then
-					if cast.hammerOfWrath(units.dyn30) then return end
-				end
-				-- Avenger's Shield
-				if isChecked("Avenger's Shield") and cast.able.avengersShield() then
-					if cast.avengersShield(units.dyn30) then return end
-				end
+			local mob30 = GetUnitExists(units.dyn30) and getFacing("player",units.dyn30)
+			-- Avenger's Shield
+			if isChecked("Avenger's Shield") and cast.able.avengersShield() and #enemies.yards10 >= 3 and mob30 then
+				if cast.avengersShield(units.dyn30) then return end
+			end
+			-- Divine Toll
+			if isChecked("Divine Toll") and cast.able.divineToll() and (#enemies.yards10 >= getValue("Divine Toll") or isBoss(units.dyn30)) and mob30 then
+				if cast.divineToll(units.dyn30) then return end
 			end
 			-- Consecration
 			if isChecked("Consecration") and cast.able.consecration() and GetUnitExists(units.dyn5) and not buff.consecration.exists() then
 				if cast.consecration() then return end
+			end
+			-- Judgment
+			if isChecked("Judgment") and cast.able.judgment() and ((talent.crusadersJudgment and charges.judgment.frac() >= 1.99) or not talent.crusadersJudgment or not debuff.judgment.exists(units.dyn30)) and mob30 then
+				if cast.judgment(units.dyn30) then return end
+			end
+			-- Hammer of Wrath
+			if isChecked("Hammer of Wrath") and cast.able.hammerOfWrath() and (getHP(units.dyn30) <= 20 or (level >=58 and buff.avengingWrath.exists()) or getBuffRemain("player", 345693) ~= 0) and mob30 then
+				if cast.hammerOfWrath(units.dyn30) then return end
+			end
+			-- Avenger's Shield
+			if isChecked("Avenger's Shield") and cast.able.avengersShield() and mob30 then
+				if cast.avengersShield(units.dyn30) then return end
 			end
 			-- Crusader Strike
 			if cast.able.crusaderStrike() and level < 14 and getFacing("player",units.dyn5) and GetUnitExists(units.dyn5) then
