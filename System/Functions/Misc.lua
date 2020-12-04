@@ -521,7 +521,7 @@ function enemyListCheck(Unit)
 	if targetBuff ~= playerBuff then return false end
 	local phaseReason = UnitPhaseReason(Unit)
 	local distance = getDistance(Unit, "player")
-	local mcCheck =	(isChecked("Attack MC Targets") and (not GetUnitIsFriend(Unit, "player") or UnitIsCharmed(Unit))) or not GetUnitIsFriend(Unit, "player")
+	local mcCheck =	(isChecked("Attack MC Targets") and (not GetUnitIsFriend(Unit, "player") or UnitIsCharmed(Unit) or UnitDebuffID("player", 320102))) or not GetUnitIsFriend(Unit, "player")
 	local inPhase = not phaseReason or phaseReason == 2 or phaseReason == 3
 	return GetObjectExists(Unit) and not UnitIsDeadOrGhost(Unit) and inPhase and UnitCanAttack("player", Unit) and UnitHealth(Unit) > 0 and
 		distance < 50 and
@@ -673,7 +673,7 @@ function pause(skipCastingCheck)
 	if	(pausekey and GetCurrentKeyBoardFocus() == nil and isChecked("Pause Mode")) or profileStop or
 		((IsMounted() or IsFlying() or UnitOnTaxi("player") or UnitInVehicle("player")) and --and (GetObjectExists("target") and GetObjectID("target") ~= 56877)
 		not (UnitBuffID("player", 190784) or UnitBuffID("player", 164222) or UnitBuffID("player", 165803) or
-		UnitBuffID("player", 157059) or
+		UnitBuffID("player", 157059) or UnitBuffID("player", 315043) or
 		UnitBuffID("player", 157060))) or
 		SpellIsTargeting() or
 		-- or (not UnitCanAttack("player","target") and not UnitIsPlayer("target") and GetUnitExists("target"))
