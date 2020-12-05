@@ -126,7 +126,7 @@ local function createOptions()
         br.ui:checkSectionState(section)
 
         section = br.ui:createSection(br.ui.window.profile, "Cooldowns")
-        br.ui:createCheckbox(section, "Auto Innervate", "Use Innervate if you have Lively Spirit traits for DPS buff")
+        br.ui:createCheckbox(section, "Auto Innervate", "Use Innervate")
         br.ui:createCheckbox(section, "Racial")
         br.ui:createCheckbox(section, "Use Trinkets")
         br.ui:createCheckbox(section, "Warrior Of Elune")
@@ -140,8 +140,6 @@ local function createOptions()
         br.ui:createCheckbox(section, "ConcentratedFlame - DPS")
         br.ui:createCheckbox(section, "Guardian Of Azeroth")
         br.ui:createSpinner(section, "Focused Azerite Beam", 3, 1, 10, 1, "Min. units hit to use Focused Azerite Beam")
-        ----
-        br.ui:createCheckbox(section, "Opener")
         br.ui:checkSectionState(section)
         -------------------------
         ---  TARGET OPTIONS   ---  -- Define Target Options
@@ -403,76 +401,10 @@ local function runRotation()
     end
 
 
-    -- Opener Reset
-    local opener = br.player.opener
 
-    if (not inCombat and not GetObjectExists("target")) or opener.complete == nil then
-
-        opener.count = 0
-        opener.WRA1 = false
-        opener.WRA2 = false
-        opener.DOT1 = false
-        opener.DOT2 = false
-        opener.DOT3 = false
-        opener.PWR = false
-        opener.PEW = false
-        opener.complete = false
-
-
-
-
-
-
-
-        --Clear last cast table ooc to avoid strange casts
-        if #br.lastCast.tracker > 0 then
-            wipe(br.lastCast.tracker)
-        end
-    end
-
-    --[134388] = "A Knot of Snakes",
-
-
-    -- track dispells in group
-    --[[ for i = 1, #br.friend do
-       if UnitGroupRolesAssigned(br.friend[i].unit) == "HEALER" and inInstance then
-         local healerClass = UnitClassification(br.friend[i].unit)
-         if healerClass == druid then
-           dispell_healer_list = curse, magic, poison
-         elseif healerClass == monk then
-           dispell_healer_list = disease, magic, poison
-         elseif healerClass == priest then
-           dispell_healer_list = disease, magic
-         elseif healerClass == shaman then
-           dispell_healer_list = curse, magic
-         elseif healerClass == paladin then
-           dispell_healer_list = disease, magic, poison
-         end
-       end
-   ]]
-
-    ABOpener = ABOpener or false
-    SW1 = SW1 or false
-    SW2 = SW2 or false
-    MF = MF or false
-    SF = SF or false
-    StF = StF or false
-    CA = CA or false
-
-    if (not inCombat and not GetObjectExists("target")) and ABopener
-    then
-        br.addonDebug("Opener Reset")
-        ABOpener = false
-        SW1 = false
-        SW2 = false
-        MF = false
-        SF = false
-        StF = false
-        CA = false
-        if #br.lastCast.tracker > 0 then
-            wipe(br.lastCast.tracker)
-        end
-
+    --Clear last cast table ooc to avoid strange casts
+    if #br.lastCast.tracker > 0 then
+        wipe(br.lastCast.tracker)
     end
 
     local astral_max = 0
@@ -1172,25 +1104,6 @@ local function runRotation()
                 aoeTarget = getValue("Starfall Targets (0 for auto)")
             end
 
-
-            -- Innverate
-            --Print("Innervate Check: "..tostring(isChecked("Auto Innervate")) .." castable: " .. tostring(cast.able.innervate()).." TTD: " ..getTTD("target"))
-
-            if isChecked("Auto Innervate") and inCombat and cast.able.innervate() and (getTTD(UnitTarget(tank)) >= 10 or (traits.livelySpirit.active and (cast.able.incarnationChoseOfElune() or cd.incarnationChoseOfElune.remain() < 2 or cast.able.celestialAlignment() or cd.celestialAlignment.remain() < 12))) then
-                for i = 1, #br.friend do
-                    if UnitGroupRolesAssigned(br.friend[i].unit) == "HEALER" and getDistance(br.friend[i].unit) < 45 and (inInstance or inRaid)
-                            and not UnitIsDeadOrGhost(br.friend[i].unit) and getLineOfSight(br.friend[i].unit) and not hasBuff(29166, br.friend[i].unit) then
-                        --buff.innervate.exists(br.friend[i].unit) then
-                        --innervate
-                        -- Print("Healer is: " .. br.friend[i].unit)
-                        --Print(traits.livelySpirit.active)
-                        if cast.innervate(br.friend[i].unit) then
-                            return true
-                        end
-                    end
-                end
-            end
-
             local groupTTD = 0
 
             if #enemies.yards45 > 0 then
@@ -1882,6 +1795,17 @@ local function runRotation()
             end
         end
 
+        if isChecked("Auto Innervate") and inCombat and cast.able.innervate() then
+            for i = 1, #br.friend do
+                if UnitGroupRolesAssigned(br.friend[i].unit) == "HEALER" and getDistance(br.friend[i].unit) < 45
+                        and not UnitIsDeadOrGhost(br.friend[i].unit) and getLineOfSight(br.friend[i].unit) and not hasBuff(29166, br.friend[i].unit) then
+                    if cast.innervate(br.friend[i].unit) then
+                        return true
+                    end
+                end
+            end
+        end
+
         if not inCombat then
             --Resurrection
 
@@ -1984,79 +1908,13 @@ local function runRotation()
         end
     end
 
-    local function actionList_Opener()
-        if ABOpener == false then
-            if not SW1 then
-                if cast.solarWrath() then
-                    -- or last cast
-                    SW1 = true
-                    br.addonDebug("Opener: Solar Wrath 1 cast")
-                    return
-                end
-            elseif SW1 and not SW2 then
-                if cast.solarWrath() then
-                    SW2 = true
-                    br.addonDebug("Opener: Solar Wrath 2 cast")
-                    return
-                end
-            elseif MF and not SF then
-                if cast.sunfire() then
-                    SF = true
-                    br.addonDebug("Opener: Sunfire cast")
-                    return
-                end
-            elseif SW2 and not MF then
-                if cast.moonfire() then
-                    MF = true
-                    br.addonDebug("Opener: Moonfire cast")
-                    return
-                end
-            elseif SF and not StF then
-                if talent.stellarFlare then
-                    if cast.stellarFlare() then
-                        StF = true
-                        br.addonDebug("Opener: Stellar Flare cast")
-                        return
-                    end
-                else
-                    StF = true
-                    br.addonDebug("Opener: Stellar Flare not talented, bypassing")
-                    return
-                end
-            elseif StF and not CA and power < 40 then
-                if cast.solarWrath() then
-                    br.addonDebug("Opener: Building Up AP")
-                    return
-                end
-            elseif StF and not CA and power >= 40 then
-                if talent.incarnationChoseOfElune and cd.incarnationChoseOfElune.remain() <= 3 then
-                    if cast.incarnationChoseOfElune("player") then
-                        br.addonDebug("Opener: Inc cast")
-                        CA = true
-                    end
-                elseif not talent.incarnationChoseOfElune and cd.celestialAlignment.remain() <= 3 then
-                    if cast.celestialAlignment("player") then
-                        br.addonDebug("Opener: CA cast")
-                        CA = true
-                    end
-                else
-                    br.addonDebug("Opener: CA/Inc On CD, Bypassing")
-                    CA = true
-                end
-                return
-            elseif CA then
-                ABOpener = true
-                br.addonDebug("Opener Complete")
-            end
-        end
-    end
     -----------------
     --- Rotations ---
     -----------------
     -- Pause
     if not IsMounted() or mode.rotation == 4 then
         -- br.player.buff.travelForm.exists() or br.player.buff.flightForm.exists())
-        if pause() or drinking or mode.rotation == 4 or cast.current.focusedAzeriteBeam() then
+        if pause() or drinking or mode.rotation == 4 or cast.current.focusedAzeriteBeam() or buff.soulshape.exists() then
             return true
         else
 
@@ -2120,15 +1978,9 @@ local function runRotation()
                         return true
                     end
                 end
-
                 if root_cc() then
                     return true
                 end
-
-                if ABOpener == false and isChecked("Opener") and (GetObjectExists("target") and isBoss("target")) then
-                    actionList_Opener()
-                end
-
                 if mode.rotation ~= 4 then
                     if dps() then
                         return true
