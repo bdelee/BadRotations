@@ -748,6 +748,7 @@ br.lists.spells = {
 
             },
             covenants                       = {
+                empowerBond                 = 326446,
                 loneEmpowerment             = 338142,
             },
             debuffs                         = {
@@ -982,6 +983,8 @@ br.lists.spells = {
                 flightForm                  = 165962,
                 frenziedRegeneration        = 22842,
                 ironfur                     = 192081,
+                kindredEmpowerment          = 327139,
+                kindredSpirits              = 326434,
                 loneSpirit                  = 338041,
                 moonkinForm                 = 197625,
                 prowl                       = 5215,
@@ -1023,6 +1026,11 @@ br.lists.spells = {
                 glyphOfTheOrca              = 114333,
                 glyphOfTheSentinel          = 219062,
                 glyphOfTheUrsolChameleon    = 107059,
+            },
+            runeforges                      = {
+                apexPredatorsCraving        = 339139,
+                eyeOfFearfullSymmetry       = 339141,
+                frenzyband                  = 340053,
             },
             talents                         = {
                 massEntanglement            = 102359,
@@ -1944,12 +1952,13 @@ br.lists.spells = {
 
             },
             buffs                           = {
+                theEmperorsCapacitor        = 235054,
                 transcendence               = 101643,
                 weaponsOfTheOrder           = 310454,
                 weaponsOfTheOrderWW         = 311054,
             },
             conduits                        = {
-
+                calculatedStrikes           = 336526,                      
             },
             covenants                       = {
                 bonedustBrew                = 325216,
@@ -1958,7 +1967,7 @@ br.lists.spells = {
                 weaponsOfTheOrder           = 310454,
             },
             debuffs                         = {
-
+                bonedustBrew                = 325216,
             },
             glyphs                          = {
 
@@ -3182,9 +3191,11 @@ br.lists.spells = {
             },
             buffs                           = {
                 astralShift                 = 108271,
+                doomWinds                   = 335903,
                 faeTransfusionRecast        = 328933,
                 ghostWolf                   = 2645,
                 lightningShield             = 192106,
+                primalLavaActuators         = 347819,
                 primordialWave              = 327164,
                 waterWalking                = 546,
             },
@@ -3204,6 +3215,10 @@ br.lists.spells = {
             },
             glyphs                          = {
 
+            },
+            runeforges                      = {
+                doomWinds                   = 335902,
+                primalLavaActuators         = 335895,
             },
             talents                         = {
                 naturesGuardian             = 30884,
@@ -3307,6 +3322,7 @@ br.lists.spells = {
         -- Demonology
         [266] = {
             abilities                       = {
+		axeToss                     = 89766,
                 bilescourgeBombers          = 267211,
                 callDreadstalkers           = 104316,
                 commandDemon                = 119898,
