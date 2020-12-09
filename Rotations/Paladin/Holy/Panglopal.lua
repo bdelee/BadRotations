@@ -86,8 +86,8 @@ local function createOptions()
         ------ DEFENSIVES -------
         -------------------------
         section = br.ui:createSection(br.ui.window.profile, "Defensive")
-        -- Pot/Stone
-        br.ui:createSpinner(section, "Pot/Stoned", 30, 0, 100, 5, "", "|cffFFFFFFHealth Percent to Cast At")
+        -- Basic Healing Module
+	br.player.module.BasicHealing(section)
         br.ui:createSpinner(section, "Divine Protection", 60, 0, 100, 5, "", "|cffFFFFFFHealth Percent to Cast At")
         br.ui:createSpinner(section, "Divine Shield", 20, 0, 100, 5, "", "|cffFFFFFFHealth Percent to Cast At")
         -- Gift of The Naaru
@@ -157,6 +157,11 @@ local function createOptions()
         -------------------------
         section = br.ui:createSection(br.ui.window.profile, "AOE Healing")
         --Trinket?
+        --Divine Toll
+        br.ui:createDropdown(section,"Divine Toll", {"At 0 Holy Power","As a Heal"}, 1)
+        br.ui:createSpinnerWithout(section,"Divine Toll Units", 3, 1, 5, 1)
+        br.ui:createSpinnerWithout(section,"Divine Toll Health", 70, 0, 100, 1)
+        br.ui:createSpinnerWithout(section,"Max Holy Power", 2, 0, 5, 1, "Only use Divine Toll when at or below this value")
         -- Rule of Law
         br.ui:createSpinner(section, "Rule of Law", 70, 0, 100, 5, "", "|cffFFFFFFHealth Percent to Cast At")
         br.ui:createSpinner(section, "RoL Targets", 3, 0, 40, 1, "", "|cffFFFFFFMinimum RoL Targets", true)
@@ -165,11 +170,11 @@ local function createOptions()
         br.ui:createSpinner(section, "LoD Targets", 3, 0, 40, 1, "", "|cffFFFFFFMinimum LoD Targets", true)
         -- Beacon of Virtue
         --[[ br.ui:createSpinner(section, "Beacon of Virtue", 80, 0, 100, 5, "", "|cffFFFFFFHealth Percent to Cast At")
-        br.ui:createSpinner(section, "BoV Targets", 3, 0, 40, 1, "", "|cffFFFFFFMinimum BoV Targets", true)
+        br.ui:createSpinner(section, "BoV Targets", 3, 0, 40, 1, "", "|cffFFFFFFMinimum BoV Targets", true)]]
         -- Holy Prism
         br.ui:createSpinner(section, "Holy Prism", 90, 0, 100, 5, "", "|cffFFFFFFHealth Percent to Cast At")
-        br.ui:createSpinner(section, "Holy Prism Targets", 3, 0, 40, 1, "", "|cffFFFFFFMinimum Holy Prism Targets", true)
-        -- Light's Hammer
+        br.ui:createSpinner(section, "Holy Prism Targets", 3, 0, 5, 1, "", "|cffFFFFFFMinimum Holy Prism Targets", true)
+        --[[-- Light's Hammer
         br.ui:createSpinner(section, "Light's Hammer", 80, 0, 100, 5, "", "|cffFFFFFFHealth Percent to Cast At")
         br.ui:createSpinner(section, "Light's Hammer Targets", 3, 0, 40, 1, "", "|cffFFFFFFMinimum Light's Hammer Targets", true)
         br.ui:createDropdown(section, "Light's Hammer Key", br.dropOptions.Toggle, 6, "", "|cffFFFFFFLight's Hammer usage.") ]]
@@ -254,6 +259,7 @@ local function runRotation()
     local tanks = getTanksTable()
     local lowest = br.friend[1]
     local friends = friends or {}
+    local module = br.player.module
     local glimmerCount = 0
     local enemies = br.player.enemies
     local lastSpell = lastSpellCast
@@ -419,23 +425,8 @@ local function runRotation()
 
     local function defensiveTime()
         if useDefensive() then
-            --HS
-            if isChecked("Pot/Stoned") and php <= getValue("Pot/Stoned") and (hasHealthPot() or hasItem(5512) or hasItem(156634)) then
-                if canUseItem(166799) then
-                    useItem(166799)
-                elseif canUseItem(5512) then
-                    useItem(5512)
-                elseif canUseItem(156634) then
-                    useItem(156634)
-                elseif canUseItem(169451) then
-                    useItem(169451)
-                elseif canUseItem(getHealthPot()) then
-                    useItem(getHealthPot())
-                elseif canUseItem(getHealthPot()) then
-                    useItem(getHealthPot())
-                end
-            end
-
+             module.BasicHealing()
+			
             if isChecked("Gift of The Naaru") and php <= getOptionValue("Gift of The Naaru") and php > 0 and race == "Draenei" then
                 if castSpell("player", racial, false, false, false) then
                     return true
@@ -819,12 +810,6 @@ local function runRotation()
                     if not IsAutoRepeatSpell(GetSpellInfo(6603)) and isValidUnit("target") and getDistance("target") <= 5 then
                         StartAttack(units.dyn5)
                     end
-                    -- Holy Prism
-                    if isChecked("Holy Prism Damage") and talent.holyPrism and cast.able.holyPrism() and #enemies.yards15 >= getValue("Holy Prism Damage") then
-                        if cast.holyPrism(thisUnit) then
-                            return true
-                        end
-                    end
                     -- Light's Hammer
                     if isChecked("Light's Hammer Damage") and talent.lightsHammer and cast.able.lightsHammer() and not moving then
                         if cast.lightsHammer("best", false, getOptionValue("Light's Hammer Damage"), 10) then
@@ -843,6 +828,20 @@ local function runRotation()
     end-- end of dps
 
     local function healingTime()
+        --Divine Toll Implementation
+        if isChecked("Divine Toll") and cast.able.divineToll() and holyPower <= getValue("Max Holy Power") and inCombat then
+            if getOptionValue("Divine Toll") == 1 and holyPower == 0 then
+                --Print("trying to cast")
+                CastSpellByName(GetSpellInfo(spell.divineToll),lowest.unit)
+            end
+            if getOptionValue("Divine Toll") == 2 then
+                if getLowAllies(getValue("Divine Toll Health")) >= getValue("Divine Toll Units") then
+                    --Print("trying to cast")
+                    CastSpellByName(GetSpellInfo(spell.divineToll),lowest.unit)
+                end
+            end
+        end
+
         -- Glimmer support
         if mode.glimmer == 3 and (inInstance or inRaid) and #tanks > 0 then
             for i = 1, #tanks do
@@ -1024,6 +1023,18 @@ local function runRotation()
             end
         end
 
+        if isChecked("Holy Prism") and talent.holyPrism and cast.able.holyPrism() and inCombat then
+            for i = 1, #enemies.yards40 do
+                local thisUnit = enemies.yards40[i]
+                local lowHealthCandidates = getUnitsToHealAround(thisUnit, 15, getValue("Holy Prism"), #br.friend)
+                if #lowHealthCandidates >= getValue("Holy Prism Targets") then
+                    if cast.holyPrism(thisUnit) then
+                        return true
+                    end
+                end
+            end
+        end
+
         if isChecked("Holy Light") and not moving and getSpellCD(20473) > gcd and (getOptionValue("Holy Light Infuse") == 1 or (getOptionValue("Holy Light Infuse") == 2 and buff.infusionOfLight.remain() > getCastTime(spell.holyLight))) then
             if lowest.hp <= getValue("Holy Light") then
                 if cast.holyLight(lowest.unit) then
@@ -1076,7 +1087,7 @@ local function runRotation()
                 if mode.wrath == 1 then
                     for i = 1, #enemies.yards30 do
                         thisUnit = enemies.yards30[i]
-                        if holyPower < 5 and lowest.hp >= getValue("Critical HP") then
+                        if (isChecked("Dev Stuff Leave off") or getFacing("player", thisUnit)) and holyPower < 5 and lowest.hp >= getValue("Critical HP") then
                             if getHP(thisUnit) < 20 or buff.avengingWrath.exists("player") then
                                 if cast.hammerOfWrath(thisUnit) then
                                     return true

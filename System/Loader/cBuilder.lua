@@ -81,19 +81,16 @@ function br.loader:new(spec,specName)
     local player = "player" -- if someone forgets ""
     if specName == nil then specName = "Initial" end
     -- Print("Spec: "..spec.." | Spec Name: "..specName)
-    if not br.loaded then
-        -- Print("Loader - Loading Profiles")
-        br.loader.loadProfiles()
-        br.loaded = true
-    end
+    -- if not br.loaded then
+    --     -- Print("Loader - Loading Profiles")
+    --     br.loader.loadProfiles()
+    --     br.loaded = true
+    -- end
 
     self.profile = specName
 
     -- Mandatory !
     self.rotation = br.rotations[spec][br.selectedProfile]
-    -- Print("Loader - Loading Settings for Rotation: "..self.rotation.name)
-    br.data.loadedSettings = false
-    br:loadSettings(nil,nil,nil,self.rotation.name)
 
     -- Spells From Spell Table
     local function getSpellsForSpec(spec)

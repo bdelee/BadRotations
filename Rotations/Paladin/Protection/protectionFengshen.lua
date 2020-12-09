@@ -1,5 +1,5 @@
 ﻿local rotationName = "Feng"
-local StunsBlackList="167876|169861|168318|165824|165919|171799|168942|167612"
+local StunsBlackList="167876|169861|168318|165824|165919|171799|168942|167612|169893"
 local StunSpellList="332329|332671|326450|328177|336451|331718|331743"
 local HoJPrioList = "164702|164362|170488|165905|165251"
 ---------------
@@ -45,7 +45,7 @@ end
 ---------------
 local function createOptions()
 	local optionTable
-	
+
 	local function rotationOptions()
 		-----------------------
 		--- GENERAL OPTIONS ---
@@ -133,7 +133,7 @@ local function createOptions()
 		-------------------------
 		section = br.ui:createSection(br.ui.window.profile, "Interrupts")
 		-- Blinding Light
-		br.ui:createCheckbox(section, "Blinding Light - INT")
+		br.ui:createSpinner(section,  "Blinding Light - INT",  2,  1,  5,  1,  "|cffFFBB00Units to use Blinding Light.")
 		-- Hammer of Justice
 		br.ui:createCheckbox(section, "Hammer of Justice - INT")
 		-- Rebuke
@@ -210,7 +210,7 @@ local function runRotation()
 	UpdateToggle("BossCase",0.25)
 	br.player.ui.mode.BossCase = br.data.settings[br.selectedSpec].toggles["BossCase"]
 	--- FELL FREE TO EDIT ANYTHING BELOW THIS AREA THIS IS JUST HOW I LIKE TO SETUP MY ROTATIONS ---
-	
+
 	--------------
 	--- Locals ---
 	--------------
@@ -246,7 +246,7 @@ local function runRotation()
 	local level         = br.player.level
 	local module        = br.player.module
 	local SotR          = true
-	
+
 	units.get(5)
 	units.get(10)
 	units.get(30)
@@ -254,7 +254,7 @@ local function runRotation()
 	enemies.get(8)
 	enemies.get(10)
 	enemies.get(30)
-	
+
 	if profileStop == nil then profileStop = false end
 	if consecrationCastTime == nil then consecrationCastTime = 0 end
 	if consecrationRemain == nil then consecrationRemain = 0 end
@@ -359,17 +359,17 @@ local function runRotation()
 			if isChecked("Lay On Hands") and cast.able.layOnHands() and inCombat and not buff.ardentDefender.exists() then
 				-- Player
 				if getOptionValue("Lay on Hands Target") == 1 then
-					if php <= getValue("Lay On Hands") then
+					if php <= getValue("Lay On Hands") and not debuff.forbearance.exists("player") then
 						if cast.layOnHands("player") then return end
 					end
 					-- Target
 				elseif getOptionValue("Lay on Hands Target") == 2 then
-					if getHP("target") <= getValue("Lay On Hands") then
+					if getHP("target") <= getValue("Lay On Hands") and not debuff.forbearance.exists("target") then
 						if cast.layOnHands("target") then return end
 					end
 					-- Mouseover
 				elseif getOptionValue("Lay on Hands Target") == 3 then
-					if getHP("mouseover") <= getValue("Lay On Hands") then
+					if getHP("mouseover") <= getValue("Lay On Hands") and not debuff.forbearance.exists("mouseover") then
 						if cast.layOnHands("mouseover") then return end
 					end
 				elseif getHP(lowestUnit) <= getValue("Lay On Hands") and not debuff.forbearance.exists(lowestUnit) then
@@ -427,17 +427,17 @@ local function runRotation()
 			if isChecked("Blessing of Protection") and cast.able.blessingOfProtection() and inCombat and not isBoss("boss1") then
 				-- Player
 				if getOptionValue("Blessing of Protection Target") == 1 then
-					if php <= getValue("Blessing of Protection") then
+					if php <= getValue("Blessing of Protection") and not debuff.forbearance.exists("player") then
 						if cast.blessingOfProtection("player") then return end
 					end
 					-- Target
 				elseif getOptionValue("Blessing of Protection Target") == 2 then
-					if getHP("target") <= getValue("Blessing of Protection") then
+					if getHP("target") <= getValue("Blessing of Protection") and not debuff.forbearance.exists("target") then
 						if cast.blessingOfProtection("target") then return end
 					end
 					-- Mouseover
 				elseif getOptionValue("Blessing of Protection Target") == 3 then
-					if getHP("mouseover") <= getValue("Blessing of Protection") then
+					if getHP("mouseover") <= getValue("Blessing of Protection") and not debuff.forbearance.exists("mouseover") then
 						if cast.blessingOfProtection("mouseover") then return end
 					end
 				elseif getHP(lowestUnit) <= getValue("Blessing of Protection") and not debuff.forbearance.exists(lowestUnit) then
@@ -616,16 +616,11 @@ local function runRotation()
 			if UnitCastingInfo("boss1") == GetSpellInfo(320788) then
 				if cast.blessingOfFreedom("boss1target") then return end
 			end
-			if getDebuffRemain("player",330810) ~= 0 or getDebuffRemain("player",326827) ~= 0 or getDebuffRemain("player",324608) ~= 0 then
+			if getDebuffRemain("player",330810) ~= 0 or getDebuffRemain("player",326827) ~= 0 or getDebuffRemain("player",324608) ~= 0 or getDebuffRemain("player",334926) ~= 0 then
 				if cast.blessingOfFreedom("player") then return end
 			end
 			if (UnitCastingInfo("boss1") == GetSpellInfo(317231) or UnitCastingInfo("boss1") == GetSpellInfo(320729)) and getDebuffRemain("player",331606) ~= 0 then
 				if cast.blessingOfFreedom("player") then return end
-			end
-			for i = 1, #br.friend do
-				if getDebuffRemain(br.friend[i].unit,320788) ~= 0 and #getAllies(br.friend[i].unit,17) <= 1 then
-					if cast.blessingOfFreedom(br.friend[i].unit) then return end
-				end
 			end
 		end
 	end
@@ -691,11 +686,12 @@ local function runRotation()
 					end
 				end
 			end
+			local BL_Unit = 0
 			for i = 1, #enemies.yards10 do
 				local thisUnit = enemies.yards10[i]
 				local distance = getDistance(thisUnit)
 				-- Hammer of Justice
-				if isChecked("Hammer of Justice - INT") and cast.able.hammerOfJustice() and getBuffRemain(thisUnit,226510) == 0 then
+				if getBuffRemain(thisUnit,226510) == 0 then
 					local interruptID
 					if UnitCastingInfo(thisUnit) then
 						interruptID = select(9,UnitCastingInfo(thisUnit))
@@ -703,10 +699,24 @@ local function runRotation()
 						interruptID = select(7,GetSpellInfo(UnitChannelInfo(thisUnit)))
 					end
 					if interruptID ~=nil and StunSpellsList[interruptID] then
-						if cast.hammerOfJustice(thisUnit) then return end
+						if isChecked("Hammer of Justice - INT") and cast.able.hammerOfJustice() then
+							if cast.hammerOfJustice(thisUnit) then return end
+						end
+						if isChecked("Blinding Light - INT") and cast.able.blindingLight() and talent.blindingLight then
+							if cast.blindingLight() then return end
+						end
 					end
 				end
 				if canInterrupt(thisUnit,getOptionValue("Interrupt At")) then
+					-- Blinding Light
+					if isChecked("Blinding Light - INT") and cast.able.blindingLight() and talent.blindingLight then
+						if not isBoss(thisUnit) and noStunsUnits[GetObjectID(thisUnit)] == nil then
+							BL_Unit = BL_Unit + 1
+							if BL_Unit >= getOptionValue("Blinding Light - INT") then
+								if cast.blindingLight() then return end
+							end
+						end
+					end
 					-- Hammer of Justice
 					if isChecked("Hammer of Justice - INT") and cast.able.hammerOfJustice() and not isBoss(thisUnit) and getBuffRemain(thisUnit,226510) == 0 and noStunsUnits[GetObjectID(thisUnit)] == nil then
 						if cast.hammerOfJustice(thisUnit) then return end
@@ -715,10 +725,6 @@ local function runRotation()
 					-- Rebuke
 					if isChecked("Rebuke - INT") and cast.able.rebuke() and distance <= 5 and (not InterruptTime or GetTime() - InterruptTime > 0.5) then
 						if cast.rebuke(thisUnit) then return end
-					end
-					-- Blinding Light
-					if isChecked("Blinding Light - INT") and cast.able.blindingLight() and talent.blindingLight and not isBoss(thisUnit) and noStunsUnits[GetObjectID(thisUnit)] == nil then
-						if cast.blindingLight() then return end
 					end
 				end
 			end

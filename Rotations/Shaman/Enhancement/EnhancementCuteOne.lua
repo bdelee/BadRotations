@@ -66,6 +66,8 @@ local function createOptions()
             -- Weapon Imbues
             br.ui:createCheckbox(section,"Windfury Weapon")
             br.ui:createCheckbox(section,"Flametongue Weapon")
+            -- Manual Windfury totem
+            br.ui:createDropdown(section,"Windfury Totem Key", br.dropOptions.Toggle, 6,"|cff0070deSet key to hold down for Windfury Totem")
         br.ui:checkSectionState(section)
         -- Cooldown Options
         section = br.ui:createSection(br.ui.window.profile, "Cooldowns")
@@ -89,6 +91,8 @@ local function createOptions()
             br.ui:createDropdownWithout(section,"Sundering", alwaysCdNever, 1, "|cffFFFFFFWhen to use Sundering.")
             -- Covenant Ability
             br.ui:createDropdownWithout(section,"Covenant Ability", alwaysCdNever, 1, "|cffFFFFFFWhen to use Covenant Ability.")
+            -- Chain Harvest Min Units
+            br.ui:createSpinnerWithout(section,"Chain Harvest Min Units", 1, 1, 5, 1, "cffFFFFFFMinimal Units in 8yrds to cast at.")
         br.ui:checkSectionState(section)
         -- Defensive Options
         section = br.ui:createSection(br.ui.window.profile, "Defensive")
@@ -349,7 +353,7 @@ actionList.AOE = function()
     -- Windfury Totem
     -- windfury_totem,if=runeforge.doom_winds.equipped&buff.doom_winds_debuff.down
     if cast.able.windfuryTotem() and not unit.moving() and buff.windfuryTotem.remains("player","any") < 30 and #enemies.yards8 > 0
-        and runeforge.doomWinds.equiped and not buff.doomWinds.exists()
+        and runeforge.doomWinds.equiped and not buff.doomWinds.exists() and not ui.checked("Windfury Totem Key")
     then
         if cast.windfuryTotem() then ui.debug("Casting Windfury Totem [AOE Doom Winds]") return true end
     end
@@ -405,7 +409,7 @@ actionList.AOE = function()
     end
     -- Chain Harvest
     -- chain_harvest,if=buff.maelstrom_weapon.stack>=5
-    if ui.alwaysCdNever("Covenant Ability") and cast.able.chainHarvest() and buff.maelstromWeapon.stack() >= 5 then
+    if ui.alwaysCdNever("Covenant Ability") and (unit.isBoss() or #enemies.yards8 >= ui.value("Chain Harvest Min Units")) and cast.able.chainHarvest() and buff.maelstromWeapon.stack() >= 5 then
         if cast.chainHarvest() then ui.debug("Casting Chain Harvest [AOE]") return true end
     end
     -- Elemental Blast
@@ -505,7 +509,7 @@ actionList.AOE = function()
     end
     -- Windfury Totem
     -- windfury_totem,if=buff.windfury_totem.remains<30
-    if cast.able.windfuryTotem() and not unit.moving() and buff.windfuryTotem.remains("player","any") < 30 and #enemies.yards8 > 0 then
+    if cast.able.windfuryTotem() and not unit.moving() and buff.windfuryTotem.remains("player","any") < 30 and #enemies.yards8 > 0 and not ui.checked("Windfury Totem Key") then
         if cast.windfuryTotem() then ui.debug("Casting Windfury Totem [AOE]") return true end
     end
     -- Primal Strike
@@ -530,7 +534,7 @@ actionList.Single = function()
     -- Windfury Totem
     -- windfury_totem,if=runeforge.doom_winds.equipped&buff.doom_winds_debuff.down
     if cast.able.windfuryTotem() and not unit.moving() and buff.windfuryTotem.remains("player","any") < 30 and #enemies.yards8 > 0 
-        and runeforge.doomWinds.equiped and not buff.doomWinds.exists()
+        and runeforge.doomWinds.equiped and not buff.doomWinds.exists() and not ui.checked("Windfury Totem Key")
     then
         if cast.windfuryTotem() then ui.debug("Casting Windfury Totem [ST Doom Winds]") return true end
     end
@@ -571,7 +575,7 @@ actionList.Single = function()
     end
     -- Chain Harvest
     -- chain_harvest,if=buff.maelstrom_weapon.stack>=5
-    if ui.alwaysCdNever("Covenant Ability") and cast.able.chainHarvest() and buff.maelstromWeapon.stack() >= 5 then
+    if ui.alwaysCdNever("Covenant Ability") and (unit.isBoss() or #enemies.yards8 >= ui.value("Chain Harvest Min Units")) and cast.able.chainHarvest() and buff.maelstromWeapon.stack() >= 5 then
         if cast.chainHarvest() then ui.debug("Casting Chain Harvest [ST]") return true end
     end
     -- Lightning Bolt
@@ -651,7 +655,7 @@ actionList.Single = function()
     end
     -- Windfury Totem
     -- windfury_totem,if=buff.windfury_totem.remains<30
-    if cast.able.windfuryTotem() and not unit.moving() and buff.windfuryTotem.remains("player","any") < 30 and #enemies.yards8 > 0 then
+    if cast.able.windfuryTotem() and not unit.moving() and buff.windfuryTotem.remains("player","any") < 30 and #enemies.yards8 > 0 and not ui.checked("Windfury Totem Key") then
         if cast.windfuryTotem() then ui.debug("Casting Windfury Totem [ST]") return true end
     end
     -- Primal Strike
@@ -707,7 +711,7 @@ actionList.PreCombat = function()
             end
             -- Windfury Totem
             -- windfury_totem
-            if cast.able.windfuryTotem() and not unit.moving() and not buff.windfuryTotem.exists("player","any") and #enemies.yards8 > 0 then
+            if cast.able.windfuryTotem() and not unit.moving() and not buff.windfuryTotem.exists("player","any") and #enemies.yards8 > 0 and not ui.checked("Windfury Totem Key") then
                 if cast.windfuryTotem() then ui.debug("Casting Windfury Totem [Pull]") return true end
             end
             -- Lightning Bolt
@@ -837,7 +841,11 @@ local function runRotation()
             end
             -- Windfury Totem
             -- windfury_totem
-            if cast.able.windfuryTotem() and not unit.moving() and not buff.windfuryTotem.exists("player","any") and #enemies.yards8 > 0 then
+            if cast.able.windfuryTotem() and not unit.moving() and not buff.windfuryTotem.exists("player","any") and #enemies.yards8 > 0 and not ui.checked("Windfury Totem Key") then
+                if cast.windfuryTotem() then ui.debug("Casting Windfury Totem") return true end
+            end
+            -- manual windury totem
+            if ui.toggle("Windfury Totem Key") and ui.checked("Windfury Totem Key") then
                 if cast.windfuryTotem() then ui.debug("Casting Windfury Totem") return true end
             end
             -- Windstrike
