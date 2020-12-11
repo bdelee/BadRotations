@@ -89,7 +89,9 @@ function br:Run()
 	-- -- other readers
 	-- br.read.commonReaders()
 	-- load common used stuff on first load
-	br:defaultSettings()
+	if not br.initalizeSettings then
+		br:defaultSettings()
+	end
 	-- add minimap fire icon
 	br:MinimapButton()
 	-- Build up pulse frame (hearth)
@@ -114,8 +116,10 @@ function br:defaultSettings()
 	if br.data.tracker == nil then br.data.tracker = {} end
 	if br.data.settings == nil then br.data.settings = {} end
 	C_Timer.After(2, function()
-		br.ui.window.config = {}
-		br.ui:createConfigWindow()
+		if br.ui.window.config == nil then br.ui.window.config = {} end
+		if br.ui.window.config.frame == nil then
+			br.ui:createConfigWindow()
+		end
 		br.ui:toggleWindow("config")
 	end)
 	-- Settings Per Spec
@@ -131,6 +135,7 @@ end
 -- Load Saved Settings
 function br:loadSavedSettings()
 	if br.initalizeSettings then
+		br:defaultSettings()
 		br.loader.loadProfiles()
 		br:loadLastProfileTracker()
 		br:loadSettings(nil,nil,nil, br.data.settings[br.selectedSpec]['RotationDropValue'])			

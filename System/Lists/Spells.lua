@@ -2072,6 +2072,9 @@ br.lists.spells = {
                 graceoftheJusticar          = 278593,
                 indomitableJustice          = 275496,
             },
+            runeforges                      = {
+                shadowbreaker               = 337812,
+            }
         },
         -- Protection
         [66] = {
@@ -3015,7 +3018,6 @@ br.lists.spells = {
                 ascendance                  = 114050,
                 bloodlust                   = 2825,
                 earthShield                 = 974,
-                echoesOfTheGreatSundering   = 208722,
                 echoingShock                = 320125,
                 elementalFocus              = 16164,
                 elementalMastery            = 16166,
@@ -3152,6 +3154,7 @@ br.lists.spells = {
                 earthShield                 = 974,
 		        waterShield                 = 52127,
                 healingRain                 = 73920,
+                heavyRainfall               = 338344,
                 jonatsFocus                 = 210607,
                 lavaSurge                   = 77762,
                 riptide                     = 61295,
@@ -3159,6 +3162,9 @@ br.lists.spells = {
                 unleashLife                 = 73685,
                 undulation                  = 216251,
                 spiritwalkersGrace          = 79206,
+            },
+            conduits                        = {
+                heavyRainfall               = 338343,
             },
             debuffs                         = {
                 flameShock                  = 188389,
@@ -3219,12 +3225,16 @@ br.lists.spells = {
             },
             buffs                           = {
                 astralShift                 = 108271,
+                chainsOfDevastationHeal     = 336737,
                 doomWinds                   = 335903,
+                echoesOfGreatSundering      = 336216,
+                elementalEquilibrium        = 337348,
                 faeTransfusionRecast        = 328933,
                 ghostWolf                   = 2645,
                 lightningShield             = 192106,
                 primalLavaActuators         = 347819,
                 primordialWave              = 327164,
+                spiritwalkersTidalTotem     = 335892,
                 waterWalking                = 546,
             },
             conduits                        = {
@@ -3245,8 +3255,14 @@ br.lists.spells = {
 
             },
             runeforges                      = {
+                chainsOfDevastation         = 336735,
                 doomWinds                   = 335902,
+                elementalEquilibrium        = 336730,
                 primalLavaActuators         = 335895,
+                echoesOfGreatSundering       = 336215,
+                skybreakersFieryDemise       = 336734,
+                spiritwalkersTidalTotem      = 335891,
+                deeptremorStone              = 336739,  
             },
             talents                         = {
                 naturesGuardian             = 30884,
