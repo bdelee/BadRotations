@@ -2,47 +2,53 @@ local br = _G["br"]
 if br.api == nil then br.api = {} end
 br.api.runeforge = function(runeforge,k,v)
     runeforge[k].equiped = false
-    
-    local item
-    local isLeggo = false
+
     local itemLeggoSlots = {
-        [1] = 1,
-        [2] = 2,
-        [3] = 3,
-        [4] = 5,
-        [5] = 6,
-        [6] = 7,
-        [7] = 8,
-        [8] = 9,
-        [9] = 10,
-        [10] = 11,
-        [11] = 12,
-        [12] = 15,
+        [1] = 1, -- Head
+        [2] = 2, -- Neck
+        [3] = 3, -- Shoulder
+        [4] = 5, -- Chest
+        [5] = 6, -- Waist
+        [6] = 7, -- Legs
+        [7] = 8, -- Feet
+        [8] = 9, -- Wrists
+        [9] = 10, -- Hands
+        [10] = 11, -- Finger1
+        [11] = 12, -- Finger2
+        [12] = 15, -- Back
     }
     local slotPowers = {}
 
-    local function findPowerBySlot(slotID)
-        local powers = slotPowers[slotID]
-        if (powers ~= nil) then
-            local powerInfo = C_LegendaryCrafting.GetRuneforgePowerInfo(powers)
-            local spellID = powerInfo.descriptionSpellID
-            if spellID == v then
-                return true
+    local function findPower()
+        for i = 1, 2 do
+            local powers = slotPowers[i]
+            if (powers ~= nil) then
+                local powerInfo = C_LegendaryCrafting.GetRuneforgePowerInfo(powers)
+                local spellID = powerInfo.descriptionSpellID
+                local spellName = GetSpellInfo(spellID)
+                local vName = GetSpellInfo(v)
+                if spellID == v and spellName == vName then
+                    return true
+                end
             end
         end
         return false
     end
-    if isChecked("Legendary Support") then
-        for i = 1, #itemLeggoSlots do
-            if GetInventoryItemID("player",i) ~= nil then
-                item = ItemLocation:CreateFromEquipmentSlot(itemLeggoSlots[i])
-                isLeggo = C_LegendaryCrafting.IsRuneforgeLegendary(item)
-                if isLeggo then
+    for i = 1, #itemLeggoSlots do
+        local thisSlot = itemLeggoSlots[i]
+        if GetInventoryItemID("player",thisSlot) ~= nil then
+            -- From: https://wow.gamepedia.com/ItemLocationMixin
+            local item = ItemLocation:CreateFromEquipmentSlot(thisSlot)
+            if item:IsValid() then
+                if C_LegendaryCrafting.IsRuneforgeLegendary(item) then
                     slotPowers = C_LegendaryCrafting.GetRuneforgePowers(item,1)
-                    runeforge[k].equiped = findPowerBySlot(1) or findPowerBySlot(2)
+                    local foundPower = findPower() or false
+                    if foundPower then
+                        runeforge[k].equiped = true
+                        break
+                    end
                 end
             end
-            if runeforge[k].equiped then break end
         end
     end
 end
