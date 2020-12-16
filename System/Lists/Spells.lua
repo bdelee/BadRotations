@@ -3194,6 +3194,7 @@ br.lists.spells = {
                 unleashLife                 = 73685,
                 undulation                  = 216251,
                 spiritwalkersGrace          = 79206,
+                swirlingCurrents            = 338340,
             },
             conduits                        = {
                 heavyRainfall               = 338343,
@@ -3683,6 +3684,7 @@ br.lists.spells = {
                 hamstring                   = 1715,
                 mortalStrike                = 12294,
                 overpower                   = 7384,
+                piercingHowl                = 12323,
                 ravager                     = 152277,
                 rend                        = 772,
                 slam                        = 1464,
