@@ -690,7 +690,14 @@ br.lists.spells = {
                 kindredEmpowerment          = 327022,
                 onethsClearVision           = 338661,
                 ravenousFrenzy              = 323546,
-                PrimordialArcanicPulsar     = 338668,
+                primordialArcanicPulsar     = 338668,
+                balanceOfAllThings          = 339942,
+                balanceOfAllThingsNature    = 339943, -- Nature Buff
+                balanceOfAllThingsArcane    = 339946, -- Arcane Buff
+                timewornDreambinder	        = 339949,
+                kindredEmpowerment          = 327022,
+                onethsClearVision           = 338661,
+                ravenousFrenzy              = 323546,
 
             },
             conduits                        = {
@@ -700,6 +707,7 @@ br.lists.spells = {
             },
             covenants                       = {
                 loneEmpowerment             = 338142,
+                ravenousFrenzy              = 323546,
             },
             debuffs                         = {
                 stellarFlare                = 202347,
@@ -708,9 +716,16 @@ br.lists.spells = {
                 stellarEmpowerment          = 197637,
             },
             glyphs                          = {
+            },
+
+            runeforges                      = {
+                timewornDreambinder	        = 339949,
+		        balanceOfAllThings          = 339942,
+                primordialArcanicPulsar     = 338668,
+                lycarasFleetingGlimpse      = 340059,
 
             },
-            talents                         = {
+            talents                       = {
                 feralAffinity               = 202157,
                 forceOfNature               = 205636,
                 furyOfElune                 = 202770,
@@ -940,6 +955,7 @@ br.lists.spells = {
             },
             runeforges                      = {
                 theDarkTitansLesson         = 338831,
+                verdantInfusion             = 338829,
 
             },
             talents                         = {
@@ -1015,12 +1031,13 @@ br.lists.spells = {
                 treantForm                  = 114282,
                 ursolsVortex                = 102793,
                 wildGrowth                  = 48438,
-                wrath                       = 5176,
+            --    wrath                       = 5176,
             },
             artifacts                       = {
 
             },
             buffs                           = {
+                adaptiveSwarm               = 325748,
                 barkskin                    = 22812,
                 bearForm                    = 5487,
                 burningEssence              = 138927,
@@ -1032,6 +1049,7 @@ br.lists.spells = {
                 ironfur                     = 192081,
                 kindredEmpowerment          = 327139,
                 kindredSpirits              = 326434,
+                kindredEmpowermentEnergize  = 327022, --/kindred-empowerment  this is when someone else cast it on you
                 loneSpirit                  = 338041,
                 moonkinForm                 = 197625,
                 prowl                       = 5215,
@@ -1045,6 +1063,7 @@ br.lists.spells = {
                 travelForm                  = 783,
                 treantForm                  = 114282,
                 wildGrowth                  = 48438,
+                onethsPerception            = 339800,
             },
             conduits                        = {
                 deepAllegiance              = 341378,
@@ -1871,6 +1890,7 @@ br.lists.spells = {
                 soothingMist                = 115175,
                 thunderFocusTea             = 116680,
                 invokeYulonTheJadeSerpent   = 322118,
+                invokeChiJiTheRedCrane      = 325197,
                 fortifyingBrew              = 243435,
             },
             artifacts                       = {
@@ -1899,7 +1919,8 @@ br.lists.spells = {
                 essenceFont                 = 191840,
                 risingMist                  = 22170,
                 soothingMistJadeStatue      = 198533,
-                envelopingBreath            = 3205209
+                envelopingBreath            = 3205209,
+                invokeChiJiTheRedCrane      = 343820,
             },
             debuffs                         = {
                 mysticTouch                 = 8647,
@@ -2004,7 +2025,7 @@ br.lists.spells = {
                 tigerPalm                   = 100780,
                 touchOfDeath                = 322109,
                 transcendence               = 101643,
-                transcendanceTransfer       = 119996,
+                transcendenceTransfer       = 119996,
                 vivify                      = 116670,
                 zenFlight                   = 125883,
                 zenPilgrimage               = 126892,
