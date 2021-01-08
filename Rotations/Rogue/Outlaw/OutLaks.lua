@@ -1388,7 +1388,7 @@ actionList.Defensive = function()
         end
 
         -- Crimson Vial
-        if cast.able.crimsonVial() and isChecked("Crimson Vial") and php < getOptionValue("Crimson Vial") then
+        if cast.able.crimsonVial() and isChecked("Crimson Vial") and php < getOptionValue("Crimson Vial") and not hasBuff(185311) then
             if cast.crimsonVial() then
                 return true
             end
