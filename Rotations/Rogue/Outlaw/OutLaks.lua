@@ -986,7 +986,7 @@ actionList.dps = function()
 
                 if mode.cov == 1 then
                     --sepsis,if=!stealthed.all
-                    if cast.able.sepsis(dynamic_target_melee) and not stealth and getDistance(dynamic_target_melee) < dynamic_range and getFacing("player", dynamic_target_melee) then
+                    if cast.able.sepsis(dynamic_target_melee) and not stealth and getDistance(dynamic_target_melee) < dynamic_range and getFacing("player", dynamic_target_melee) and getTTD(dynamic_target_melee) > 4 then
                         if cast.sepsis(dynamic_target_melee) then
                             return true
                         end
