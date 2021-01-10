@@ -941,17 +941,14 @@ actionList.dps = function()
                   or hasBuff(323558) and combo == 2 or hasBuff(323559) and combo == 3 or hasBuff(323560) and combo == 4
           then
         ]]
-        if not stealth and combo >= comboMax - int(buff.broadside.exists()) - (int(buff.opportunity.exists()) * int(talent.quickDraw))
-                or hasBuff(323558) and combo == 2 or hasBuff(323559) and combo == 3 or hasBuff(323560) and combo == 4
-        then
-
-            if cast.able.betweenTheEyes() and ttd(units.dyn20) > combo * 3 then
-                if (GetUnitExists(units.dyn20) and not isExplosive(units.dyn20)) then
-                    if cast.betweenTheEyes(units.dyn20) then
-                        return true
+        if not stealth and combo >= comboMax - 1 then
+                    if cast.able.betweenTheEyes() and ttd(units.dyn20) > combo * 3 then
+                        if (GetUnitExists(units.dyn20) and not isExplosive(units.dyn20)) then
+                            if cast.betweenTheEyes(units.dyn20) then
+                                return true
+                            end
+                        end
                     end
-                end
-            end
 
             --slice_and_dice,if=buff.slice_and_dice.remains<fight_remains&buff.slice_and_dice.remains<(1+combo_points)*1.8
             if (mode.cooldown == 1 and isChecked("Slice and Dice") or not isChecked("Slice and Dice")) then
@@ -1228,14 +1225,25 @@ actionList.Extra = function()
         if inCombat or badguy then
             if br.timer:useTimer("check_for_buffs", 1) then
                 buff_rollTheBones_count = 0
+                local buff_rollTheBones_array = {}
                 for k, v in pairs(br.player.spell.buffs.rollTheBones) do
                     if UnitBuffID("player", tonumber(v)) then
-                        buff_rollTheBones_remain = tonumber(getBuffRemain("player", tonumber(v)))
+                        --if tonumber(getBuffRemain("player", tonumber(v))) >= buff_rollTheBones_remain then
+                        table.insert(buff_rollTheBones_array, tonumber(getBuffRemain("player", tonumber(v))))
+                        --end
                         buff_rollTheBones_count = buff_rollTheBones_count + 1
                     end
                 end
+                --br.player.ui.debug("ARRAY SIZE: " .. #buff_rollTheBones_array)
+                if #buff_rollTheBones_array > 0 then
+                    buff_rollTheBones_remain = math.max(unpack(buff_rollTheBones_array))
+                else 
+                    buff_rollTheBones_remain = 0
+                end
+                br.player.ui.debug("ROLL THE BONES REMAIN: " .. buff_rollTheBones_remain)
+                buff_rollTheBones_array = {}
             end
-            if (buff_rollTheBones_count == 0 or buff_rollTheBones_remain < 3 or buff_rollTheBones_count < 2 and (buff.buriedTreasure.exists() or buff.grandMelee.exists() or buff.trueBearing.exists())) then
+            if (buff_rollTheBones_count == 0 or buff_rollTheBones_remain < 3 or (buff_rollTheBones_count == 1 and not (buff.broadside.exists() or buff.trueBearing.exists())) or (buff_rollTheBones_count == 2 and buff.buriedTreasure.exists() and buff.grandMelee.exists())) then
                 if cast.rollTheBones() then
                     br.player.ui.debug("rolling bones!")
                     return true
