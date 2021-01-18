@@ -2302,6 +2302,7 @@ br.lists.spells = {
                 holyAvenger                 = 105809,
                 retributionAura             = 183435,
                 seraphim                    = 152262,
+                vanquishersHammer           = 328204,
             },
             conduits                        = {
 
@@ -3340,10 +3341,11 @@ br.lists.spells = {
                 doomWinds                   = 335902,
                 elementalEquilibrium        = 336730,
                 primalLavaActuators         = 335895,
-                echoesOfGreatSundering       = 336215,
-                skybreakersFieryDemise       = 336734,
-                spiritwalkersTidalTotem      = 335891,
-                deeptremorStone              = 336739,  
+                echoesOfGreatSundering      = 336215,
+                skybreakersFieryDemise      = 336734,
+                spiritwalkersTidalTotem     = 335891,
+                deeptremorStone             = 336739, 
+                windspeakersLavaResurgence  = 336063
             },
             talents                         = {
                 naturesGuardian             = 30884,
