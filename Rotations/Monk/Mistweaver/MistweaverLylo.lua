@@ -1,6 +1,6 @@
 local br = _G["br"]
 local rotationName = "Lylo"
-local version = "2.2.0"
+local version = "2.2.2"
 
 
 local colors = {
@@ -161,35 +161,7 @@ local function createOptions()
 
     local function rotationOptions()
         local section
-        local exportSettings = {"Solo", "Dungeon", "Raid", "Extra 1", "Extra 2"}
-        section = br.ui:createSection(br.ui.window.profile, "Settings")
-        br.ui:createDropdownWithout(section,    "Select Settings", exportSettings, 2, "Select profile to use, then click load")
-        br.ui:createText(section, colors.red.."Save your current settings before loading a new one!!")
-        local saveProfile = function()
-            br:saveSettings("Exported Settings", br.player.class, br.selectedSpec, br.selectedProfileName.. "\\" .. exportSettings[getValue("Select Settings")])
-        end
-        local loadProfile = function()
-            br.data.loadedSettings = false
-            local loadDir = br:checkDirectories("Exported Settings", br.player.class, br.selectedSpec, br.selectedProfileName.. "\\" .. exportSettings[getValue("Select Settings")])
-            if br:findFileInFolder("savedSettings.lua", loadDir) then
-                br:loadSettings("Exported Settings", br.player.class, br.selectedSpec, br.selectedProfileName.. "\\" .. exportSettings[getValue("Select Settings")])
-                ReloadUI()
-            else
-                Print("You don't have saved setting for :" .. exportSettings[getValue("Select Settings")])
-            end
-        end
-        local y = -5
-        for i=1, #section.children do
-            if section.children[i].type ~= "Spinner" and section.children[i].type ~= "Dropdown" then
-                y = y - section.children[i].frame:GetHeight()*1.2
-            end
-        end
-        y = round2(y, 1)
-        br.ui:createButton(section, "Save", 10, y, saveProfile)
-        br.ui:createButton(section, "Load", -10, y, loadProfile, true)
-        br.ui:checkSectionState(section)
-
-        section = br.ui:createSection(br.ui.window.profile, "Debug Info")
+        section = br.ui:createSection(br.ui.window.profile, "Debug Info - Version " .. version)
         br.ui:createCheckbox(       section, text.debug,  "Enable Debug Info")
         br.ui:createCheckbox(       section, text.detailedDebugger,  "Enable Debug Info")
         br.ui:createText(section, "Lowest Unit")
@@ -319,7 +291,7 @@ local function createOptions()
         br.player.module.BasicHealing(section)
         br.ui:checkSectionState(section)
 
-        section = br.ui:createSection(br.ui.window.profile, "Made By: Lylo - Version " .. version)
+        section = br.ui:createSection(br.ui.window.profile, "Made By: Lylo")
         br.ui:createText(section, colors.red    .. "Discord contact: " .. colors.green .. "LyLo#0253")
         br.ui:createText(section, colors.red    .. "This is not a job, it's a hobby. I don't get paid for this, I do ")
         br.ui:createText(section, colors.red    .. "it because I like it. SO if you make me hate this, I just STOP. ")
@@ -1149,7 +1121,9 @@ end
 
 local getDebugInfo = function()
     if labels.lowest then
-        labels.lowest:SetText("   ".. UnitName(friends.lowest.unit) .. " at " .. round2(friends.lowest.hp, 2) .."%")
+        if friends.lowest then
+            labels.lowest:SetText("   ".. UnitName(friends.lowest.unit) .. " at " .. round2(friends.lowest.hp, 2) .."%")
+        end
         local tempColor = colors.red
         if friends.lowAllies.essenceFont >= ui.value(text.heal.essenceFont.."1") then
             tempColor = colors.green
